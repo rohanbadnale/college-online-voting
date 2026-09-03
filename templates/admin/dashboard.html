@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | SVM Udgir</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+          rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<div class="dashboard-page">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="dashboard-sidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="sidebar-logo">
+
+            <img
+                src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                alt="SVM Udgir Logo">
+
+            <div>
+
+                <strong>SVM UDGIR</strong>
+
+                <span>
+                    Voting System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-divider"></div>
+
+
+        <!-- MENU -->
+
+        <nav class="sidebar-menu">
+
+
+            <p class="menu-title">
+                MAIN MENU
+            </p>
+
+
+            <!-- DASHBOARD -->
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="menu-item active">
+
+                <span class="menu-icon">
+                    📊
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- ELECTIONS -->
+
+            <a href="{{ url_for('admin.elections') }}"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    🗳️
+                </span>
+
+                <span>
+                    Elections
+                </span>
+
+            </a>
+
+
+            <!-- CANDIDATES -->
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    👥
+                </span>
+
+                <span>
+                    Candidates
+                </span>
+
+            </a>
+
+
+            <!-- STUDENTS -->
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    🎓
+                </span>
+
+                <span>
+                    Students
+                </span>
+
+            </a>
+
+
+            <p class="menu-title menu-space">
+                MANAGEMENT
+            </p>
+
+
+            <!-- RESULTS -->
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    🏆
+                </span>
+
+                <span>
+                    Results
+                </span>
+
+            </a>
+
+
+            <!-- VOTING LINKS -->
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    🔗
+                </span>
+
+                <span>
+                    Voting Links
+                </span>
+
+            </a>
+
+
+            <!-- AUDIT LOGS -->
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">
+                    📋
+                </span>
+
+                <span>
+                    Audit Logs
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- =================================================
+             SIDEBAR BOTTOM
+        ================================================== -->
+
+        <div class="sidebar-bottom">
+
+
+            <div class="admin-mini">
+
+
+                <div class="admin-avatar">
+
+                    {{ admin_name[0]|upper if admin_name else 'A' }}
+
+                </div>
+
+
+                <div class="admin-mini-info">
+
+                    <strong>
+                        {{ admin_name }}
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- LOGOUT -->
+
+            <a href="{{ url_for('admin.logout') }}"
+               class="logout-btn">
+
+                <span>
+                    🚪
+                </span>
+
+                Logout
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="dashboard-header">
+
+
+            <div>
+
+                <span class="dashboard-label">
+                    ADMINISTRATION
+                </span>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Welcome back, {{ admin_name }}.
+                    Manage your college voting system.
+                </p>
+
+            </div>
+
+
+            <div class="header-admin">
+
+
+                <div class="header-avatar">
+
+                    {{ admin_name[0]|upper if admin_name else 'A' }}
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        {{ admin_name }}
+                    </strong>
+
+                    <span>
+                        {{ admin_email }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- =================================================
+             FLASH MESSAGES
+        ================================================== -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="dashboard-flashes">
+
+                    {% for category, message in messages %}
+
+                        <div class="dashboard-flash {{ category }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section class="stats-grid">
+
+
+            <!-- TOTAL ELECTIONS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    🗳️
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Elections
+                    </span>
+
+                    <strong>
+                        {{ stats.total_elections }}
+                    </strong>
+
+                    <small>
+                        All elections
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVE ELECTIONS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    🟢
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Active Elections
+                    </span>
+
+                    <strong>
+                        {{ stats.active_elections }}
+                    </strong>
+
+                    <small>
+                        Currently running
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- CANDIDATES -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon gold">
+                    👥
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Candidates
+                    </span>
+
+                    <strong>
+                        {{ stats.total_candidates }}
+                    </strong>
+
+                    <small>
+                        Active candidates
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- STUDENTS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+                    🎓
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Students
+                    </span>
+
+                    <strong>
+                        {{ stats.total_students }}
+                    </strong>
+
+                    <small>
+                        Registered students
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- VOTES -->
+
+            <div class="stat-card vote-stat">
+
+                <div class="stat-icon red">
+                    ✓
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Votes
+                    </span>
+
+                    <strong>
+                        {{ stats.total_votes }}
+                    </strong>
+
+                    <small>
+                        Votes submitted
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>
+                        QUICK ACTIONS
+                    </span>
+
+                    <h2>
+                        Manage Voting System
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <!-- CREATE ELECTION -->
+
+                <a href="{{ url_for('admin.elections') }}"
+                   class="quick-action primary">
+
+                    <div class="quick-icon">
+                        +
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Create Election
+                        </strong>
+
+                        <span>
+                            Start a new college election
+                        </span>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+                <!-- ADD CANDIDATE -->
+
+                <a href="#"
+                   class="quick-action">
+
+                    <div class="quick-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Add Candidate
+                        </strong>
+
+                        <span>
+                            Register a new candidate
+                        </span>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+                <!-- VIEW RESULTS -->
+
+                <a href="#"
+                   class="quick-action">
+
+                    <div class="quick-icon">
+                        📈
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            View Results
+                        </strong>
+
+                        <span>
+                            Check election results
+                        </span>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+                <!-- VOTING LINK -->
+
+                <a href="#"
+                   class="quick-action">
+
+                    <div class="quick-icon">
+                        🔗
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Voting Link
+                        </strong>
+
+                        <span>
+                            Generate or copy voting link
+                        </span>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RECENT ELECTIONS
+        ================================================== -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <span>
+                        ELECTION MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Recent Elections
+                    </h2>
+
+                </div>
+
+
+                <!-- VIEW ALL -->
+
+                <a href="{{ url_for('admin.elections') }}"
+                   class="view-all">
+
+                    View All →
+
+                </a>
+
+
+            </div>
+
+
+            <div class="election-table-wrapper">
+
+
+                {% if elections %}
+
+
+                <table class="election-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Election
+                            </th>
+
+                            <th>
+                                Start Date
+                            </th>
+
+                            <th>
+                                End Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for election in elections %}
+
+
+                        <tr>
+
+
+                            <!-- ELECTION -->
+
+                            <td>
+
+                                <div class="election-name">
+
+
+                                    <div class="election-icon">
+                                        🗳️
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            {{ election.title }}
+                                        </strong>
+
+                                        <span>
+                                            Election #{{ election.id }}
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- START -->
+
+                            <td>
+
+                                <span class="date-text">
+
+                                    {{ election.start_datetime.strftime('%d %b %Y') }}
+
+                                </span>
+
+                                <small>
+
+                                    {{ election.start_datetime.strftime('%I:%M %p') }}
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- END -->
+
+                            <td>
+
+                                <span class="date-text">
+
+                                    {{ election.end_datetime.strftime('%d %b %Y') }}
+
+                                </span>
+
+                                <small>
+
+                                    {{ election.end_datetime.strftime('%I:%M %p') }}
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+
+                                {% if election.status == 'ACTIVE' %}
+
+                                    <span class="status-badge active">
+                                        ● ACTIVE
+                                    </span>
+
+
+                                {% elif election.status == 'UPCOMING' %}
+
+                                    <span class="status-badge upcoming">
+                                        ● UPCOMING
+                                    </span>
+
+
+                                {% elif election.status == 'COMPLETED' %}
+
+                                    <span class="status-badge completed">
+                                        ● COMPLETED
+                                    </span>
+
+
+                                {% elif election.status == 'CANCELLED' %}
+
+                                    <span class="status-badge cancelled">
+                                        ● CANCELLED
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="status-badge">
+                                        {{ election.status }}
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                                <a href="{{ url_for('admin.elections') }}"
+                                   class="table-action">
+
+                                    Manage
+
+                                </a>
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+                {% else %}
+
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+                <div class="empty-state">
+
+
+                    <div class="empty-icon">
+                        🗳️
+                    </div>
+
+
+                    <h3>
+                        No Elections Yet
+                    </h3>
+
+
+                    <p>
+                        Create your first college election
+                        to start managing the voting system.
+                    </p>
+
+
+                    <a href="{{ url_for('admin.elections') }}"
+                       class="empty-btn">
+
+                        + Create First Election
+
+                    </a>
+
+
+                </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             SECURITY INFORMATION
+        ================================================== -->
+
+        <section class="system-info">
+
+
+            <div class="system-info-icon">
+                🔒
+            </div>
+
+
+            <div>
+
+                <strong>
+                    Secure Administration Area
+                </strong>
+
+                <p>
+                    You are logged in as an authorized
+                    administrator. Admin activities may be
+                    recorded in the system audit logs.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="dashboard-footer">
+
+
+            <span>
+                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+            </span>
+
+
+            <span>
+                Online Voting System
+            </span>
+
+
+        </footer>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+
+</html>

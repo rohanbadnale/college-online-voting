@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Registration | SVM Udgir</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin.css') }}"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="admin-register-page">
+
+
+    <div class="register-card">
+
+
+        <!-- LOGO -->
+
+        <div class="register-logo">
+
+            <img
+                src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                alt="SVM Udgir Logo"
+            >
+
+        </div>
+
+
+        <!-- HEADING -->
+
+        <div class="register-heading">
+
+            <span>ADMINISTRATION</span>
+
+            <h1>Admin Registration</h1>
+
+            <p>
+                Create SVM Voting System Administrator
+            </p>
+
+        </div>
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- REGISTRATION FORM -->
+
+        <form
+            method="POST"
+            action="{{ url_for('admin.register') }}"
+        >
+
+
+            <!-- NAME -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Admin Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter admin email"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Minimum 8 characters"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Re-enter password"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+            </div>
+
+
+            <!-- REGISTRATION KEY -->
+
+            <div class="form-group">
+
+                <label for="registration_key">
+                    Admin Registration Key
+                </label>
+
+                <input
+                    type="password"
+                    id="registration_key"
+                    name="registration_key"
+                    placeholder="Enter admin registration key"
+                    required
+                >
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="register-btn"
+            >
+
+                CREATE ADMIN ACCOUNT
+
+            </button>
+
+
+        </form>
+
+
+        <!-- LOGIN LINK -->
+
+        <div class="register-links">
+
+            <a href="{{ url_for('admin.login') }}">
+                Already have an account? Login
+            </a>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="register-security">
+
+            🔒 Authorized personnel only.
+            A valid admin registration key is required.
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

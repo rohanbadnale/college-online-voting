@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Elections | SVM Udgir</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+          rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<div class="dashboard-page">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="dashboard-sidebar">
+
+        <div class="sidebar-logo">
+
+            <img
+                src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                alt="SVM Udgir Logo">
+
+            <div>
+
+                <strong>SVM UDGIR</strong>
+
+                <span>Voting System</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-divider"></div>
+
+
+        <nav class="sidebar-menu">
+
+            <p class="menu-title">
+                MAIN MENU
+            </p>
+
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="menu-item">
+
+                <span class="menu-icon">📊</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="{{ url_for('admin.elections') }}"
+               class="menu-item active">
+
+                <span class="menu-icon">🗳️</span>
+
+                Elections
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">👥</span>
+
+                Candidates
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🎓</span>
+
+                Students
+
+            </a>
+
+
+            <p class="menu-title menu-space">
+                MANAGEMENT
+            </p>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🏆</span>
+
+                Results
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🔗</span>
+
+                Voting Links
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">📋</span>
+
+                Audit Logs
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-mini">
+
+                <div class="admin-avatar">
+
+                    {{ session.get("admin_name", "A")[0]|upper }}
+
+                </div>
+
+                <div class="admin-mini-info">
+
+                    <strong>
+                        {{ session.get("admin_name") }}
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a href="{{ url_for('admin.logout') }}"
+               class="logout-btn">
+
+                🚪 Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <span class="dashboard-label">
+                    ELECTION MANAGEMENT
+                </span>
+
+                <h1>
+                    Elections
+                </h1>
+
+                <p>
+                    Create and manage college elections.
+                </p>
+
+            </div>
+
+
+            <a href="#create-election"
+               class="election-create-top">
+
+                + Create Election
+
+            </a>
+
+        </header>
+
+
+
+        <!-- FLASH -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="dashboard-flashes">
+
+                    {% for category, message in messages %}
+
+                        <div class="dashboard-flash {{ category }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- CREATE ELECTION -->
+
+        <section class="election-create-card"
+                 id="create-election">
+
+            <div class="election-form-heading">
+
+                <div>
+
+                    <span>
+                        NEW ELECTION
+                    </span>
+
+                    <h2>
+                        Create Election
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form method="POST"
+                  action="{{ url_for('admin.create_election') }}">
+
+
+                <div class="election-form-grid">
+
+
+                    <div class="election-form-group full">
+
+                        <label for="title">
+                            Election Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Example: SVM Student Council Election 2026"
+                            required>
+
+                    </div>
+
+
+                    <div class="election-form-group full">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4"
+                            placeholder="Enter election description..."></textarea>
+
+                    </div>
+
+
+                    <div class="election-form-group">
+
+                        <label for="start_datetime">
+                            Start Date & Time
+                        </label>
+
+                        <input
+                            type="datetime-local"
+                            id="start_datetime"
+                            name="start_datetime"
+                            required>
+
+                    </div>
+
+
+                    <div class="election-form-group">
+
+                        <label for="end_datetime">
+                            End Date & Time
+                        </label>
+
+                        <input
+                            type="datetime-local"
+                            id="end_datetime"
+                            name="end_datetime"
+                            required>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="election-form-footer">
+
+                    <span>
+                        New elections are created with
+                        <strong>UPCOMING</strong> status.
+                    </span>
+
+                    <button
+                        type="submit"
+                        class="create-election-btn">
+
+                        + CREATE ELECTION
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ELECTION LIST -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>
+                        ELECTION MANAGEMENT
+                    </span>
+
+                    <h2>
+                        All Elections
+                    </h2>
+
+                </div>
+
+                <span class="election-count">
+
+                    {{ elections|length }} Elections
+
+                </span>
+
+            </div>
+
+
+            <div class="elections-list">
+
+                {% if elections %}
+
+                    {% for election in elections %}
+
+                    <div class="election-management-card">
+
+
+                        <div class="election-card-main">
+
+
+                            <div class="election-card-icon">
+                                🗳️
+                            </div>
+
+
+                            <div class="election-card-info">
+
+                                <h3>
+                                    {{ election.title }}
+                                </h3>
+
+                                <p>
+
+                                    {% if election.description %}
+
+                                        {{ election.description }}
+
+                                    {% else %}
+
+                                        No description provided.
+
+                                    {% endif %}
+
+                                </p>
+
+
+                                <div class="election-meta">
+
+                                    <span>
+                                        ID #{{ election.id }}
+                                    </span>
+
+                                    <span>
+                                        Start:
+                                        {{ election.start_datetime.strftime('%d %b %Y, %I:%M %p') }}
+                                    </span>
+
+                                    <span>
+                                        End:
+                                        {{ election.end_datetime.strftime('%d %b %Y, %I:%M %p') }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="election-card-side">
+
+
+                            {% if election.status == "ACTIVE" %}
+
+                                <span class="status-badge active">
+                                    ● ACTIVE
+                                </span>
+
+                            {% elif election.status == "UPCOMING" %}
+
+                                <span class="status-badge upcoming">
+                                    ● UPCOMING
+                                </span>
+
+                            {% elif election.status == "COMPLETED" %}
+
+                                <span class="status-badge completed">
+                                    ● COMPLETED
+                                </span>
+
+                            {% elif election.status == "CANCELLED" %}
+
+                                <span class="status-badge cancelled">
+                                    ● CANCELLED
+                                </span>
+
+                            {% endif %}
+
+
+                            <div class="election-actions">
+
+
+                                {% if election.status == "UPCOMING" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('admin.start_election', election_id=election.id) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="action-btn start">
+
+                                            ▶ Start
+
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+
+
+                                {% if election.status == "ACTIVE" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('admin.end_election', election_id=election.id) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="action-btn end">
+
+                                            ■ End
+
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+
+
+                                {% if election.status in ["UPCOMING", "ACTIVE"] %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('admin.cancel_election', election_id=election.id) }}">
+
+                                        <button
+                                            type="submit"
+                                            class="action-btn cancel">
+
+                                            Cancel
+
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            🗳️
+                        </div>
+
+                        <h3>
+                            No Elections Found
+                        </h3>
+
+                        <p>
+                            Create your first election using
+                            the form above.
+                        </p>
+
+                        <a href="#create-election"
+                           class="empty-btn">
+
+                            + Create Election
+
+                        </a>
+
+                    </div>
+
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- SECURITY INFO -->
+
+        <div class="system-info">
+
+            <div class="system-info-icon">
+                🔒
+            </div>
+
+            <div>
+
+                <strong>
+                    Election Security
+                </strong>
+
+                <p>
+                    Every election receives a unique voting
+                    token. Election actions performed by
+                    administrators are recorded in the audit log.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+            </span>
+
+            <span>
+                Online Voting System
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
