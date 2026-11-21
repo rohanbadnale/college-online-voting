@@ -1,3 +1,6 @@
+import os
+import uuid
+from werkzeug.utils import secure_filename
 from flask import (
     Blueprint,
     render_template,
@@ -1043,3 +1046,1622 @@ def logout():
     return redirect(
         url_for("admin.login")
     )
+# =========================================================
+# POSITION MANAGEMENT
+# =========================================================
+
+@admin_bp.route("/positions/<int:election_id>")
+def positions(election_id):
+
+    if not session.get("admin_id"):
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+        return redirect(url_for("admin.elections"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # Get election
+        cursor.execute(
+            """
+            SELECT
+                id,
+                title,
+                status
+            FROM elections
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (election_id,)
+        )
+
+        election = cursor.fetchone()
+
+        if not election:
+            flash(
+                "Election not found.",
+                "error"
+            )
+            return redirect(url_for("admin.elections"))
+
+        # Get positions
+        cursor.execute(
+            """
+            SELECT
+                id,
+                election_id,
+                position_name
+            FROM positions
+            WHERE election_id = %s
+            ORDER BY id ASC
+            """,
+            (election_id,)
+        )
+
+        positions = cursor.fetchall()
+
+        return render_template(
+            "admin/positions.html",
+            election=election,
+            positions=positions
+        )
+
+    except Exception as e:
+
+        print("Positions error:", e)
+
+        flash(
+            "Unable to load positions.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.elections")
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+
+# =========================================================
+# ADD POSITION
+# =========================================================
+
+@admin_bp.route(
+    "/elections/<int:election_id>/positions/create",
+    methods=["POST"]
+)
+def create_position(election_id):
+
+    if not session.get("admin_id"):
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+        return redirect(url_for("admin.login"))
+
+    position_name = request.form.get(
+        "position_name",
+        ""
+    ).strip()
+
+    if not position_name:
+        flash(
+            "Position name is required.",
+            "error"
+        )
+        return redirect(
+            url_for(
+                "admin.positions",
+                election_id=election_id
+            )
+        )
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+        return redirect(
+            url_for(
+                "admin.positions",
+                election_id=election_id
+            )
+        )
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # Check election
+        cursor.execute(
+            """
+            SELECT
+                id,
+                title,
+                status
+            FROM elections
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (election_id,)
+        )
+
+        election = cursor.fetchone()
+
+        if not election:
+            flash(
+                "Election not found.",
+                "error"
+            )
+            return redirect(
+                url_for("admin.elections")
+            )
+
+        if election["status"] in (
+            "COMPLETED",
+            "CANCELLED"
+        ):
+            flash(
+                "Positions cannot be added to this election.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=election_id
+                )
+            )
+
+        # Duplicate position check
+        cursor.execute(
+            """
+            SELECT id
+            FROM positions
+            WHERE election_id = %s
+            AND LOWER(position_name) = LOWER(%s)
+            LIMIT 1
+            """,
+            (
+                election_id,
+                position_name
+            )
+        )
+
+        existing_position = cursor.fetchone()
+
+        if existing_position:
+            flash(
+                "This position already exists in the election.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=election_id
+                )
+            )
+
+        # Insert position
+        cursor.execute(
+            """
+            INSERT INTO positions
+            (
+                election_id,
+                position_name
+            )
+            VALUES
+            (
+                %s,
+                %s
+            )
+            """,
+            (
+                election_id,
+                position_name
+            )
+        )
+
+        position_id = cursor.lastrowid
+
+        # Audit log
+        cursor.execute(
+            """
+            INSERT INTO audit_logs
+            (
+                admin_id,
+                action,
+                description
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s
+            )
+            """,
+            (
+                session.get("admin_id"),
+                "CREATE_POSITION",
+                f"Created position #{position_id}: "
+                f"{position_name} "
+                f"for election #{election_id}"
+            )
+        )
+
+        connection.commit()
+
+        flash(
+            "Position added successfully.",
+            "success"
+        )
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "Create position error:",
+            e
+        )
+
+        flash(
+            "Unable to add position.",
+            "error"
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+    return redirect(
+        url_for(
+            "admin.positions",
+            election_id=election_id
+        )
+    )
+
+
+# =========================================================
+# EDIT POSITION
+# =========================================================
+
+@admin_bp.route(
+    "/positions/<int:position_id>/edit",
+    methods=["POST"]
+)
+def edit_position(position_id):
+
+    if not session.get("admin_id"):
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+        return redirect(url_for("admin.login"))
+
+    position_name = request.form.get(
+        "position_name",
+        ""
+    ).strip()
+
+    if not position_name:
+        flash(
+            "Position name is required.",
+            "error"
+        )
+        return redirect(url_for("admin.elections"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+        return redirect(url_for("admin.elections"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # Get position + election
+        cursor.execute(
+            """
+            SELECT
+                p.id,
+                p.election_id,
+                p.position_name,
+                e.title,
+                e.status
+            FROM positions p
+            INNER JOIN elections e
+                ON p.election_id = e.id
+            WHERE p.id = %s
+            LIMIT 1
+            """,
+            (position_id,)
+        )
+
+        position = cursor.fetchone()
+
+        if not position:
+            flash(
+                "Position not found.",
+                "error"
+            )
+            return redirect(
+                url_for("admin.elections")
+            )
+
+        if position["status"] in (
+            "COMPLETED",
+            "CANCELLED"
+        ):
+            flash(
+                "This position cannot be edited.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=position["election_id"]
+                )
+            )
+
+        # Duplicate check
+        cursor.execute(
+            """
+            SELECT id
+            FROM positions
+            WHERE election_id = %s
+            AND LOWER(position_name) = LOWER(%s)
+            AND id != %s
+            LIMIT 1
+            """,
+            (
+                position["election_id"],
+                position_name,
+                position_id
+            )
+        )
+
+        duplicate = cursor.fetchone()
+
+        if duplicate:
+            flash(
+                "Another position with this name already exists.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=position["election_id"]
+                )
+            )
+
+        cursor.execute(
+            """
+            UPDATE positions
+            SET position_name = %s
+            WHERE id = %s
+            """,
+            (
+                position_name,
+                position_id
+            )
+        )
+
+        # Audit
+        cursor.execute(
+            """
+            INSERT INTO audit_logs
+            (
+                admin_id,
+                action,
+                description
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s
+            )
+            """,
+            (
+                session.get("admin_id"),
+                "EDIT_POSITION",
+                f"Updated position #{position_id} "
+                f"to: {position_name}"
+            )
+        )
+
+        connection.commit()
+
+        flash(
+            "Position updated successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for(
+                "admin.positions",
+                election_id=position["election_id"]
+            )
+        )
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "Edit position error:",
+            e
+        )
+
+        flash(
+            "Unable to update position.",
+            "error"
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+    return redirect(
+        url_for("admin.elections")
+    )
+
+
+# =========================================================
+# DELETE POSITION
+# =========================================================
+
+@admin_bp.route(
+    "/positions/<int:position_id>/delete",
+    methods=["POST"]
+)
+def delete_position(position_id):
+
+    if not session.get("admin_id"):
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+        return redirect(url_for("admin.elections"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # Get position
+        cursor.execute(
+            """
+            SELECT
+                p.id,
+                p.election_id,
+                p.position_name,
+                e.title,
+                e.status
+            FROM positions p
+            INNER JOIN elections e
+                ON p.election_id = e.id
+            WHERE p.id = %s
+            LIMIT 1
+            """,
+            (position_id,)
+        )
+
+        position = cursor.fetchone()
+
+        if not position:
+            flash(
+                "Position not found.",
+                "error"
+            )
+            return redirect(
+                url_for("admin.elections")
+            )
+
+        if position["status"] in (
+            "ACTIVE",
+            "COMPLETED"
+        ):
+            flash(
+                "Position cannot be deleted after election starts.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=position["election_id"]
+                )
+            )
+
+        # Check candidates
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM candidates
+            WHERE position_id = %s
+            """,
+            (position_id,)
+        )
+
+        candidate_count = cursor.fetchone()["total"]
+
+        if candidate_count > 0:
+            flash(
+                "Cannot delete position because candidates "
+                "are already assigned to it.",
+                "error"
+            )
+            return redirect(
+                url_for(
+                    "admin.positions",
+                    election_id=position["election_id"]
+                )
+            )
+
+        cursor.execute(
+            """
+            DELETE FROM positions
+            WHERE id = %s
+            """,
+            (position_id,)
+        )
+
+        # Audit
+        cursor.execute(
+            """
+            INSERT INTO audit_logs
+            (
+                admin_id,
+                action,
+                description
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s
+            )
+            """,
+            (
+                session.get("admin_id"),
+                "DELETE_POSITION",
+                f"Deleted position #{position_id}: "
+                f"{position['position_name']} "
+                f"from election #{position['election_id']}"
+            )
+        )
+
+        connection.commit()
+
+        flash(
+            "Position deleted successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for(
+                "admin.positions",
+                election_id=position["election_id"]
+            )
+        )
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "Delete position error:",
+            e
+        )
+
+        flash(
+            "Unable to delete position.",
+            "error"
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+    return redirect(
+        url_for("admin.elections")
+    )
+# =========================================================
+# CANDIDATE MANAGEMENT
+# =========================================================
+
+@admin_bp.route("/candidates")
+def candidates():
+
+    if not session.get("admin_id"):
+        flash("Please login to access the admin panel.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        cursor.execute(
+            """
+            SELECT
+                e.id,
+                e.title,
+                e.status,
+                e.start_datetime,
+                e.end_datetime,
+                COUNT(c.id) AS candidate_count
+            FROM elections e
+            LEFT JOIN candidates c
+                ON e.id = c.election_id
+                AND c.status = 'ACTIVE'
+            GROUP BY
+                e.id,
+                e.title,
+                e.status,
+                e.start_datetime,
+                e.end_datetime,
+                e.created_at
+            ORDER BY e.created_at DESC
+            """
+        )
+
+        elections = cursor.fetchall()
+
+        return render_template(
+            "admin/candidates.html",
+            elections=elections
+        )
+
+    except Exception as e:
+
+        print("Candidates page error:", e)
+
+        flash(
+            "Unable to load candidates.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.dashboard")
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+
+# =========================================================
+# VIEW CANDIDATES OF ELECTION
+# =========================================================
+
+@admin_bp.route(
+    "/elections/<int:election_id>/candidates"
+)
+def election_candidates(election_id):
+
+    if not session.get("admin_id"):
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.login")
+        )
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.elections")
+        )
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # -------------------------------------------------
+        # GET ELECTION
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                title,
+                description,
+                status,
+                start_datetime,
+                end_datetime
+            FROM elections
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (election_id,)
+        )
+
+        election = cursor.fetchone()
+
+        if not election:
+
+            flash(
+                "Election not found.",
+                "error"
+            )
+
+            return redirect(
+                url_for("admin.elections")
+            )
+
+        # -------------------------------------------------
+        # GET POSITIONS
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                election_id,
+                position_name
+            FROM positions
+            WHERE election_id = %s
+            ORDER BY id ASC
+            """,
+            (election_id,)
+        )
+
+        positions = cursor.fetchall()
+
+        # -------------------------------------------------
+        # GET CANDIDATES
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                c.id,
+                c.election_id,
+                c.position_id,
+                c.name,
+                c.roll_number,
+                c.department,
+                c.year,
+                c.manifesto,
+                c.photo,
+                c.profile_url,
+                c.status,
+                c.created_at,
+                p.position_name
+            FROM candidates c
+            INNER JOIN positions p
+                ON c.position_id = p.id
+            WHERE c.election_id = %s
+            ORDER BY
+                p.id ASC,
+                c.name ASC
+            """,
+            (election_id,)
+        )
+
+        candidates = cursor.fetchall()
+
+        return render_template(
+            "admin/candidates.html",
+            election=election,
+            positions=positions,
+            candidates=candidates
+        )
+
+    except Exception as e:
+
+        print(
+            "Election candidates error:",
+            e
+        )
+
+        flash(
+            "Unable to load candidates.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.elections")
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+# =========================================================
+# ADD / CREATE CANDIDATE
+# =========================================================
+
+@admin_bp.route(
+    "/elections/<int:election_id>/candidates/create",
+    methods=["GET", "POST"]
+)
+def create_candidate(election_id):
+
+    # -----------------------------------------------------
+    # ADMIN CHECK
+    # -----------------------------------------------------
+
+    if not session.get("admin_id"):
+
+        flash(
+            "Please login to access the admin panel.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.login")
+        )
+
+    connection = get_db_connection()
+
+    if connection is None:
+
+        flash(
+            "Database connection failed.",
+            "error"
+        )
+
+        return redirect(
+            url_for("admin.elections")
+        )
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # -------------------------------------------------
+        # GET ELECTION
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                title,
+                description,
+                status,
+                start_datetime,
+                end_datetime
+            FROM elections
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (election_id,)
+        )
+
+        election = cursor.fetchone()
+
+        if not election:
+
+            flash(
+                "Election not found.",
+                "error"
+            )
+
+            return redirect(
+                url_for("admin.elections")
+            )
+
+        # -------------------------------------------------
+        # GET POSITIONS
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                election_id,
+                position_name
+            FROM positions
+            WHERE election_id = %s
+            ORDER BY id ASC
+            """,
+            (election_id,)
+        )
+
+        positions = cursor.fetchall()
+
+        # =================================================
+        # GET REQUEST
+        # =================================================
+
+        if request.method == "GET":
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        # =================================================
+        # POST REQUEST
+        # =================================================
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        roll_number = request.form.get(
+            "roll_number",
+            ""
+        ).strip()
+
+        department = request.form.get(
+            "department",
+            ""
+        ).strip()
+
+        year = request.form.get(
+            "year",
+            ""
+        ).strip()
+
+        manifesto = request.form.get(
+            "manifesto",
+            ""
+        ).strip()
+
+        profile_url = request.form.get(
+            "profile_url",
+            ""
+        ).strip()
+
+        position_id = request.form.get(
+            "position_id",
+            ""
+        ).strip()
+
+        # -------------------------------------------------
+        # VALIDATION
+        # -------------------------------------------------
+
+        if not name:
+
+            flash(
+                "Candidate name is required.",
+                "error"
+            )
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        if not position_id:
+
+            flash(
+                "Please select a position.",
+                "error"
+            )
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        try:
+
+            position_id = int(position_id)
+
+        except ValueError:
+
+            flash(
+                "Invalid position.",
+                "error"
+            )
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        # -------------------------------------------------
+        # ELECTION STATUS CHECK
+        # -------------------------------------------------
+
+        if election["status"] in (
+            "ACTIVE",
+            "COMPLETED",
+            "CANCELLED"
+        ):
+
+            flash(
+                "Candidates cannot be added after the election starts.",
+                "error"
+            )
+
+            return redirect(
+                url_for(
+                    "admin.election_candidates",
+                    election_id=election_id
+                )
+            )
+
+        # -------------------------------------------------
+        # POSITION CHECK
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                position_name
+            FROM positions
+            WHERE id = %s
+            AND election_id = %s
+            LIMIT 1
+            """,
+            (
+                position_id,
+                election_id
+            )
+        )
+
+        position = cursor.fetchone()
+
+        if not position:
+
+            flash(
+                "Selected position does not belong to this election.",
+                "error"
+            )
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        # -------------------------------------------------
+        # DUPLICATE CANDIDATE CHECK
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id
+            FROM candidates
+            WHERE election_id = %s
+            AND position_id = %s
+            AND LOWER(name) = LOWER(%s)
+            LIMIT 1
+            """,
+            (
+                election_id,
+                position_id,
+                name
+            )
+        )
+
+        existing = cursor.fetchone()
+
+        if existing:
+
+            flash(
+                "This candidate already exists for this position.",
+                "error"
+            )
+
+            return render_template(
+                "admin/add_candidate.html",
+                election=election,
+                positions=positions
+            )
+
+        # =================================================
+        # PHOTO UPLOAD
+        # =================================================
+
+        photo = request.files.get("photo")
+
+        photo_path = None
+
+        if photo and photo.filename:
+
+            # Allowed extensions
+            allowed_extensions = {
+                "jpg",
+                "jpeg",
+                "png"
+            }
+
+            original_filename = secure_filename(
+                photo.filename
+            )
+
+            # Check extension
+            if "." not in original_filename:
+
+                flash(
+                    "Invalid photo file.",
+                    "error"
+                )
+
+                return render_template(
+                    "admin/add_candidate.html",
+                    election=election,
+                    positions=positions
+                )
+
+            extension = (
+                original_filename
+                .rsplit(".", 1)[1]
+                .lower()
+            )
+
+            # Validate extension
+            if extension not in allowed_extensions:
+
+                flash(
+                    "Only JPG, JPEG and PNG photos are allowed.",
+                    "error"
+                )
+
+                return render_template(
+                    "admin/add_candidate.html",
+                    election=election,
+                    positions=positions
+                )
+
+            # -------------------------------------------------
+            # CREATE UPLOAD DIRECTORY
+            # -------------------------------------------------
+
+            upload_folder = os.path.join(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__)
+                    )
+                ),
+                "static",
+                "images",
+                "candidates"
+            )
+
+            os.makedirs(
+                upload_folder,
+                exist_ok=True
+            )
+
+            # -------------------------------------------------
+            # UNIQUE FILE NAME
+            # -------------------------------------------------
+
+            filename = (
+                f"{uuid.uuid4().hex}.{extension}"
+            )
+
+            file_path = os.path.join(
+                upload_folder,
+                filename
+            )
+
+            # -------------------------------------------------
+            # SAVE PHOTO
+            # -------------------------------------------------
+
+            photo.save(file_path)
+
+            # -------------------------------------------------
+            # DATABASE PATH
+            # -------------------------------------------------
+
+            photo_path = (
+                f"images/candidates/{filename}"
+            )
+
+            print(
+                "Candidate photo saved:",
+                file_path
+            )
+
+        # =================================================
+        # INSERT CANDIDATE
+        # =================================================
+
+        cursor.execute(
+            """
+            INSERT INTO candidates
+            (
+                election_id,
+                position_id,
+                name,
+                roll_number,
+                department,
+                year,
+                manifesto,
+                photo,
+                profile_url,
+                status
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                'ACTIVE'
+            )
+            """,
+            (
+                election_id,
+                position_id,
+                name,
+                roll_number,
+                department,
+                year,
+                manifesto,
+                photo_path,
+                profile_url
+            )
+        )
+
+        candidate_id = cursor.lastrowid
+
+        # =================================================
+        # AUDIT LOG
+        # =================================================
+
+        cursor.execute(
+            """
+            INSERT INTO audit_logs
+            (
+                admin_id,
+                action,
+                description
+            )
+            VALUES
+            (
+                %s,
+                %s,
+                %s
+            )
+            """,
+            (
+                session.get("admin_id"),
+                "CREATE_CANDIDATE",
+                f"Created candidate #{candidate_id}: "
+                f"{name} for position "
+                f"{position['position_name']} "
+                f"in election #{election_id}"
+            )
+        )
+
+        connection.commit()
+
+        flash(
+            "Candidate added successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for(
+                "admin.election_candidates",
+                election_id=election_id
+            )
+        )
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "Create candidate error:",
+            e
+        )
+
+        flash(
+            "Unable to create candidate.",
+            "error"
+        )
+
+        return render_template(
+            "admin/add_candidate.html",
+            election=election,
+            positions=positions
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+# =========================================================
+# ELECTION RESULTS
+# URL: /admin/results
+# =========================================================
+
+@admin_bp.route("/results")
+def results():
+
+    if not session.get("admin_id"):
+        flash("Please login to access the admin panel.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        # Get all elections
+        cursor.execute("""
+            SELECT
+                id,
+                title,
+                status,
+                start_datetime,
+                end_datetime
+            FROM elections
+            ORDER BY created_at DESC
+        """)
+
+        elections = cursor.fetchall()
+
+        election_id = request.args.get("election_id")
+
+        selected_election = None
+        result_groups = []
+
+        if elections:
+
+            if election_id:
+                selected_election = next(
+                    (
+                        e for e in elections
+                        if str(e["id"]) == str(election_id)
+                    ),
+                    None
+                )
+
+            if selected_election is None:
+                selected_election = elections[0]
+
+            # Candidate-wise results grouped by position
+            cursor.execute("""
+                SELECT
+                    p.id AS position_id,
+                    p.position_name,
+                    c.id AS candidate_id,
+                    c.name AS candidate_name,
+                    c.roll_number,
+                    c.department,
+                    c.year,
+                    COUNT(v.id) AS vote_count
+
+                FROM positions p
+
+                LEFT JOIN candidates c
+                    ON c.position_id = p.id
+                    AND c.election_id = p.election_id
+
+                LEFT JOIN votes v
+                    ON v.candidate_id = c.id
+                    AND v.position_id = p.id
+                    AND v.election_id = p.election_id
+
+                WHERE p.election_id = %s
+
+                GROUP BY
+                    p.id,
+                    p.position_name,
+                    c.id,
+                    c.name,
+                    c.roll_number,
+                    c.department,
+                    c.year
+
+                ORDER BY
+                    p.id ASC,
+                    vote_count DESC,
+                    c.name ASC
+            """, (selected_election["id"],))
+
+            rows = cursor.fetchall()
+
+            # Group results by position
+            positions = {}
+
+            for row in rows:
+
+                position_id = row["position_id"]
+
+                if position_id not in positions:
+                    positions[position_id] = {
+                        "position_name": row["position_name"],
+                        "candidates": []
+                    }
+
+                if row["candidate_id"] is not None:
+
+                    positions[position_id]["candidates"].append({
+                        "id": row["candidate_id"],
+                        "name": row["candidate_name"],
+                        "roll_number": row["roll_number"],
+                        "department": row["department"],
+                        "year": row["year"],
+                        "votes": int(row["vote_count"] or 0)
+                    })
+
+            # Calculate totals, percentages and winners
+            for position in positions.values():
+
+                candidates = position["candidates"]
+
+                total_votes = sum(
+                    candidate["votes"]
+                    for candidate in candidates
+                )
+
+                highest_votes = max(
+                    (candidate["votes"] for candidate in candidates),
+                    default=0
+                )
+
+                winners = [
+                    candidate
+                    for candidate in candidates
+                    if candidate["votes"] == highest_votes
+                    and highest_votes > 0
+                ]
+
+                for candidate in candidates:
+
+                    if total_votes > 0:
+                        candidate["percentage"] = round(
+                            candidate["votes"] / total_votes * 100,
+                            2
+                        )
+                    else:
+                        candidate["percentage"] = 0
+
+                    candidate["is_winner"] = (
+                        len(winners) == 1
+                        and candidate["votes"] == highest_votes
+                        and highest_votes > 0
+                    )
+
+                position["total_votes"] = total_votes
+                position["winners"] = winners
+                position["tie"] = len(winners) > 1
+
+                result_groups.append(position)
+
+        return render_template(
+            "admin/results.html",
+            elections=elections,
+            selected_election=selected_election,
+            result_groups=result_groups
+        )
+
+    except Exception as e:
+
+        print("Results page error:", e)
+
+        flash("Unable to load election results.", "error")
+
+        return render_template(
+            "admin/results.html",
+            elections=elections if "elections" in locals() else [],
+            selected_election=None,
+            result_groups=[]
+        )
+
+    finally:
+
+        cursor.close()
+        connection.close()
+
+@admin_bp.route("/voting-links")
+def voting_links():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT
+                id,
+                title,
+                status,
+                voting_token,
+                start_datetime,
+                end_datetime
+            FROM elections
+            ORDER BY id DESC
+        """)
+
+        elections = cursor.fetchall()
+
+        for election in elections:
+            election["voting_url"] = url_for(
+                "voting.voting_page",
+                voting_token=election["voting_token"],
+                _external=True
+            )
+
+        return render_template(
+            "admin/voting_links.html",
+            elections=elections
+        )
+
+    except Exception as e:
+        print("Voting links error:", e)
+        flash("Unable to load voting links.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    finally:
+        cursor.close()
+        connection.close()

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +32,9 @@
 <div class="dashboard-page">
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside class="dashboard-sidebar">
 
@@ -62,8 +65,11 @@
             </p>
 
 
-            <a href="{{ url_for('admin.dashboard') }}"
-               class="menu-item">
+            <!-- DASHBOARD -->
+
+            <a
+                href="{{ url_for('admin.dashboard') }}"
+                class="menu-item">
 
                 <span class="menu-icon">📊</span>
 
@@ -72,8 +78,11 @@
             </a>
 
 
-            <a href="{{ url_for('admin.elections') }}"
-               class="menu-item active">
+            <!-- ELECTIONS -->
+
+            <a
+                href="{{ url_for('admin.elections') }}"
+                class="menu-item active">
 
                 <span class="menu-icon">🗳️</span>
 
@@ -82,18 +91,24 @@
             </a>
 
 
-            <a href="#"
-               class="menu-item">
+            <!-- CANDIDATES -->
 
-                <span class="menu-icon">👥</span>
+            <a
+                href="{{ url_for('admin.candidates') }}"
+                class="menu-item">
+
+                <span class="menu-icon">👤</span>
 
                 Candidates
 
             </a>
 
 
-            <a href="#"
-               class="menu-item">
+            <!-- STUDENTS -->
+
+            <a
+                href="#"
+                class="menu-item">
 
                 <span class="menu-icon">🎓</span>
 
@@ -107,8 +122,11 @@
             </p>
 
 
-            <a href="#"
-               class="menu-item">
+            <!-- RESULTS -->
+
+            <a
+                href="#"
+                class="menu-item">
 
                 <span class="menu-icon">🏆</span>
 
@@ -117,8 +135,11 @@
             </a>
 
 
-            <a href="#"
-               class="menu-item">
+            <!-- VOTING LINKS -->
+
+            <a
+                href="#"
+                class="menu-item">
 
                 <span class="menu-icon">🔗</span>
 
@@ -127,8 +148,11 @@
             </a>
 
 
-            <a href="#"
-               class="menu-item">
+            <!-- AUDIT LOGS -->
+
+            <a
+                href="#"
+                class="menu-item">
 
                 <span class="menu-icon">📋</span>
 
@@ -138,6 +162,8 @@
 
         </nav>
 
+
+        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
@@ -152,7 +178,7 @@
                 <div class="admin-mini-info">
 
                     <strong>
-                        {{ session.get("admin_name") }}
+                        {{ session.get("admin_name", "Administrator") }}
                     </strong>
 
                     <span>
@@ -164,8 +190,9 @@
             </div>
 
 
-            <a href="{{ url_for('admin.logout') }}"
-               class="logout-btn">
+            <a
+                href="{{ url_for('admin.logout') }}"
+                class="logout-btn">
 
                 🚪 Logout
 
@@ -177,12 +204,16 @@
 
 
 
-    <!-- MAIN -->
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
     <main class="dashboard-main">
 
 
-        <!-- HEADER -->
+        <!-- =================================================
+             HEADER
+             ================================================= -->
 
         <header class="dashboard-header">
 
@@ -203,8 +234,9 @@
             </div>
 
 
-            <a href="#create-election"
-               class="election-create-top">
+            <a
+                href="#create-election"
+                class="election-create-top">
 
                 + Create Election
 
@@ -214,7 +246,9 @@
 
 
 
-        <!-- FLASH -->
+        <!-- =================================================
+             FLASH MESSAGES
+             ================================================= -->
 
         {% with messages = get_flashed_messages(with_categories=true) %}
 
@@ -240,10 +274,14 @@
 
 
 
-        <!-- CREATE ELECTION -->
+        <!-- =================================================
+             CREATE ELECTION
+             ================================================= -->
 
-        <section class="election-create-card"
-                 id="create-election">
+        <section
+            class="election-create-card"
+            id="create-election">
+
 
             <div class="election-form-heading">
 
@@ -262,12 +300,15 @@
             </div>
 
 
-            <form method="POST"
-                  action="{{ url_for('admin.create_election') }}">
+            <form
+                method="POST"
+                action="{{ url_for('admin.create_election') }}">
 
 
                 <div class="election-form-grid">
 
+
+                    <!-- TITLE -->
 
                     <div class="election-form-group full">
 
@@ -285,6 +326,8 @@
                     </div>
 
 
+                    <!-- DESCRIPTION -->
+
                     <div class="election-form-group full">
 
                         <label for="description">
@@ -300,6 +343,8 @@
                     </div>
 
 
+                    <!-- START -->
+
                     <div class="election-form-group">
 
                         <label for="start_datetime">
@@ -314,6 +359,8 @@
 
                     </div>
 
+
+                    <!-- END -->
 
                     <div class="election-form-group">
 
@@ -336,9 +383,17 @@
                 <div class="election-form-footer">
 
                     <span>
+
                         New elections are created with
-                        <strong>UPCOMING</strong> status.
+
+                        <strong>
+                            UPCOMING
+                        </strong>
+
+                        status.
+
                     </span>
+
 
                     <button
                         type="submit"
@@ -356,9 +411,12 @@
 
 
 
-        <!-- ELECTION LIST -->
+        <!-- =================================================
+             ELECTION LIST
+             ================================================= -->
 
         <section class="dashboard-section">
+
 
             <div class="section-heading">
 
@@ -374,6 +432,7 @@
 
                 </div>
 
+
                 <span class="election-count">
 
                     {{ elections|length }} Elections
@@ -383,28 +442,40 @@
             </div>
 
 
+
             <div class="elections-list">
+
 
                 {% if elections %}
 
+
                     {% for election in elections %}
+
 
                     <div class="election-management-card">
 
+
+                        <!-- =================================
+                             ELECTION INFO
+                             ================================= -->
 
                         <div class="election-card-main">
 
 
                             <div class="election-card-icon">
+
                                 🗳️
+
                             </div>
 
 
                             <div class="election-card-info">
 
+
                                 <h3>
                                     {{ election.title }}
                                 </h3>
+
 
                                 <p>
 
@@ -423,21 +494,34 @@
 
                                 <div class="election-meta">
 
+
                                     <span>
+
                                         ID #{{ election.id }}
+
                                     </span>
 
+
                                     <span>
+
                                         Start:
+
                                         {{ election.start_datetime.strftime('%d %b %Y, %I:%M %p') }}
+
                                     </span>
 
+
                                     <span>
+
                                         End:
+
                                         {{ election.end_datetime.strftime('%d %b %Y, %I:%M %p') }}
+
                                     </span>
+
 
                                 </div>
+
 
                             </div>
 
@@ -445,38 +529,81 @@
 
 
 
+                        <!-- =================================
+                             ELECTION ACTIONS
+                             ================================= -->
+
                         <div class="election-card-side">
 
+
+                            <!-- STATUS -->
 
                             {% if election.status == "ACTIVE" %}
 
                                 <span class="status-badge active">
-                                    ● ACTIVE
+
+                                    🟢 ACTIVE
+
                                 </span>
 
                             {% elif election.status == "UPCOMING" %}
 
                                 <span class="status-badge upcoming">
-                                    ● UPCOMING
+
+                                    🟡 UPCOMING
+
                                 </span>
 
                             {% elif election.status == "COMPLETED" %}
 
                                 <span class="status-badge completed">
-                                    ● COMPLETED
+
+                                    🔵 COMPLETED
+
                                 </span>
 
                             {% elif election.status == "CANCELLED" %}
 
                                 <span class="status-badge cancelled">
-                                    ● CANCELLED
+
+                                    🔴 CANCELLED
+
                                 </span>
 
                             {% endif %}
 
 
+
+                            <!-- =================================
+                                 ACTION BUTTONS
+                                 ================================= -->
+
                             <div class="election-actions">
 
+
+                                <!-- POSITIONS -->
+
+                                <a
+                                    href="{{ url_for('admin.positions', election_id=election.id) }}"
+                                    class="action-btn position">
+
+                                    ⚙ Positions
+
+                                </a>
+
+
+                                <!-- CANDIDATES -->
+
+                                <a
+                                    href="{{ url_for('admin.election_candidates', election_id=election.id) }}"
+                                    class="action-btn candidate">
+
+                                    👤 Candidates
+
+                                </a>
+
+
+                                <!-- START -->
 
                                 {% if election.status == "UPCOMING" %}
 
@@ -497,6 +624,7 @@
                                 {% endif %}
 
 
+                                <!-- END -->
 
                                 {% if election.status == "ACTIVE" %}
 
@@ -508,7 +636,7 @@
                                             type="submit"
                                             class="action-btn end">
 
-                                            ■ End
+                                            ⏹ End
 
                                         </button>
 
@@ -517,6 +645,7 @@
                                 {% endif %}
 
 
+                                <!-- CANCEL -->
 
                                 {% if election.status in ["UPCOMING", "ACTIVE"] %}
 
@@ -541,7 +670,9 @@
 
                         </div>
 
+
                     </div>
+
 
                     {% endfor %}
 
@@ -549,32 +680,49 @@
                 {% else %}
 
 
+                    <!-- =================================
+                         EMPTY STATE
+                         ================================= -->
+
                     <div class="empty-state">
 
+
                         <div class="empty-icon">
+
                             🗳️
+
                         </div>
 
+
                         <h3>
+
                             No Elections Found
+
                         </h3>
 
+
                         <p>
+
                             Create your first election using
                             the form above.
+
                         </p>
 
-                        <a href="#create-election"
-                           class="empty-btn">
+
+                        <a
+                            href="#create-election"
+                            class="empty-btn">
 
                             + Create Election
 
                         </a>
 
+
                     </div>
 
 
                 {% endif %}
+
 
             </div>
 
@@ -582,42 +730,64 @@
 
 
 
-        <!-- SECURITY INFO -->
+        <!-- =================================================
+             SECURITY INFO
+             ================================================= -->
 
         <div class="system-info">
 
+
             <div class="system-info-icon">
-                🔒
+
+                🔐
+
             </div>
+
 
             <div>
 
                 <strong>
+
                     Election Security
+
                 </strong>
 
+
                 <p>
+
                     Every election receives a unique voting
                     token. Election actions performed by
                     administrators are recorded in the audit log.
+
                 </p>
 
             </div>
 
+
         </div>
 
 
-        <!-- FOOTER -->
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
 
         <footer class="dashboard-footer">
 
-            <span>
-                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
-            </span>
 
             <span>
-                Online Voting System
+
+                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+
             </span>
+
+
+            <span>
+
+                Online Voting System
+
+            </span>
+
 
         </footer>
 
@@ -626,6 +796,8 @@
 
 </div>
 
+
 </body>
 
 </html>
+```

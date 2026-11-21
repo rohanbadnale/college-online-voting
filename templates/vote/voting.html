@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if election %}
+            {{ election.title }} | SVM Online Voting
+        {% else %}
+            SVM Online Voting
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/voting.css') }}">
+</head>
+
+<body class="voting-page">
+
+<div class="voting-container">
+
+    <!-- HEADER -->
+
+    <header class="voting-header">
+
+        <div class="college-brand">
+
+            <div class="college-logo">SVM</div>
+
+            <div>
+                <h1>SVM Online Voting</h1>
+                <span>Swami Vivekanand Mahavidyalaya, Udgir</span>
+            </div>
+
+        </div>
+
+        {% if election %}
+        <div class="voting-status">
+            <span class="status-dot"></span>
+            Voting Active
+        </div>
+        {% endif %}
+
+    </header>
+
+
+    <!-- FLASH MESSAGES -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-container">
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    {% if not election %}
+
+        <!-- NO ACTIVE ELECTION -->
+
+        <section class="election-card">
+
+            <span class="election-kicker">COLLEGE ELECTION</span>
+
+            <h2>No Active Election</h2>
+
+            <p>
+                Currently there is no active election.
+                Please contact the college administrator.
+            </p>
+
+            <a href="/" class="submit-vote-btn">
+                Back to Home
+            </a>
+
+        </section>
+
+    {% else %}
+
+
+        <!-- ELECTION INFORMATION -->
+
+        <section class="election-card">
+
+            <span class="election-kicker">
+                COLLEGE ELECTION
+            </span>
+
+            <h2>{{ election.title }}</h2>
+
+            {% if election.description %}
+                <p>{{ election.description }}</p>
+            {% endif %}
+
+            <div class="election-note">
+
+                <span class="note-icon">!</span>
+
+                <span>
+                    Select one candidate for each position before
+                    submitting your vote.
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- VOTING FORM -->
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'voting.submit_vote',
+                voting_token=election['voting_token']
+            ) }}"
+            id="votingForm"
+        >
+
+            <!-- STUDENT INFORMATION -->
+
+            <section class="student-verification-card">
+
+                <div class="section-title">
+
+                    <span class="section-kicker">
+                        VOTER VERIFICATION
+                    </span>
+
+                    <h2>Student Information</h2>
+
+                    <p>
+                        Enter your registered student ID to continue.
+                    </p>
+
+                </div>
+
+                <div class="student-input">
+
+                    <label for="student_id">
+                        Student ID
+                    </label>
+
+                    <input
+                        type="number"
+                        id="student_id"
+                        name="student_id"
+                        placeholder="Enter your student ID"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- POSITIONS -->
+
+            <div class="positions-wrapper">
+
+                {% for position in positions %}
+
+                    <section class="vote-position-card">
+
+                        <div class="position-heading">
+
+                            <div class="position-badge">
+                                {{ loop.index }}
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    POSITION {{ loop.index }}
+                                </span>
+
+                                <h2>
+                                    {{ position.position_name }}
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CANDIDATES -->
+
+                        <div class="candidate-grid">
+
+                            {% set position_candidates =
+                                candidates.get(position.id, []) %}
+
+                            {% for candidate in position_candidates %}
+
+                                <label class="candidate-card">
+
+                                    <input
+                                        type="radio"
+                                        name="position_{{ position.id }}"
+                                        value="{{ candidate.id }}"
+                                        required
+                                    >
+
+                                    <div class="candidate-content">
+
+                                        <div class="candidate-photo-wrapper">
+
+                                            {% if candidate.photo %}
+
+                                                <img
+                                                    src="{{ url_for(
+                                                        'static',
+                                                        filename=candidate.photo
+                                                    ) }}"
+                                                    alt="{{ candidate.name }}"
+                                                    class="candidate-photo"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="candidate-placeholder">
+                                                    {{ candidate.name[0]|upper }}
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="candidate-details">
+
+                                            <h3>{{ candidate.name }}</h3>
+
+                                            {% if candidate.department %}
+                                                <p>{{ candidate.department }}</p>
+                                            {% endif %}
+
+                                            {% if candidate.year %}
+                                                <span>{{ candidate.year }}</span>
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <a
+                                            href="{{ url_for(
+                                                'voting.candidate_profile',
+                                                voting_token=election['voting_token'],
+                                                candidate_id=candidate.id
+                                            ) }}"
+                                            class="profile-btn"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onclick="event.stopPropagation();"
+                                        >
+                                            View Candidate Profile
+                                        </a>
+
+                                    </div>
+
+                                    <div class="candidate-check">
+                                        ✓
+                                    </div>
+
+                                </label>
+
+                            {% else %}
+
+                                <p>
+                                    No active candidates available for this position.
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </section>
+
+                {% else %}
+
+                    <section class="vote-position-card">
+                        <h2>No Voting Positions Available</h2>
+                        <p>Please contact the election administrator.</p>
+                    </section>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- SUBMIT AREA -->
+
+            {% if positions %}
+
+                <section class="submit-section">
+
+                    <div class="submit-warning">
+
+                        <span>!</span>
+
+                        <p>
+                            Please review all your selections carefully.
+                            Once submitted, your vote cannot be changed.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="submit-vote-btn"
+                        id="submitVoteBtn"
+                    >
+                        Submit My Vote
+                    </button>
+
+                </section>
+
+            {% endif %}
+
+        </form>
+
+    {% endif %}
+
+
+    <!-- FOOTER -->
+
+    <footer class="voting-footer">
+
+        <span>
+            © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+        </span>
+
+        <span>
+            College Online Voting System
+        </span>
+
+    </footer>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const candidateCards =
+        document.querySelectorAll(".candidate-card");
+
+    candidateCards.forEach(function (card) {
+
+        const radio =
+            card.querySelector('input[type="radio"]');
+
+        radio.addEventListener("change", function () {
+
+            const position =
+                card.closest(".vote-position-card");
+
+            position
+                .querySelectorAll(".candidate-card")
+                .forEach(function (item) {
+                    item.classList.remove("selected");
+                });
+
+            if (radio.checked) {
+                card.classList.add("selected");
+            }
+
+        });
+
+    });
+
+
+    const votingForm =
+        document.getElementById("votingForm");
+
+    if (votingForm) {
+
+        votingForm.addEventListener("submit", function (event) {
+
+            if (!confirm(
+                "Are you sure you want to submit your vote? You cannot change it later."
+            )) {
+                event.preventDefault();
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

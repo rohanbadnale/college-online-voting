@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Election Results | SVM Udgir</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        .results-main {
+            padding: 35px;
+        }
+
+        .results-header {
+            margin-bottom: 30px;
+        }
+
+        .results-header h1 {
+            margin: 10px 0;
+        }
+
+        .results-header p {
+            color: #7b879b;
+        }
+
+        .results-filter {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #e5eaf2;
+        }
+
+        .results-filter form {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .results-filter select {
+            min-width: 250px;
+            padding: 12px;
+            border: 1px solid #dce2ec;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .results-filter button {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            background: #cba323;
+            color: #071630;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .result-position {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e5eaf2;
+            border-radius: 16px;
+        }
+
+        .position-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .position-header h2 {
+            font-size: 21px;
+            color: #071630;
+        }
+
+        .vote-total {
+            background: #edf2fa;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .candidate-result {
+            padding: 18px 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .candidate-result:last-child {
+            border-bottom: none;
+        }
+
+        .candidate-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .candidate-name {
+            font-weight: 700;
+            color: #152541;
+        }
+
+        .candidate-meta {
+            color: #8490a5;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .candidate-votes {
+            font-weight: 800;
+            font-size: 16px;
+            color: #152541;
+        }
+
+        .result-bar {
+            height: 11px;
+            background: #edf1f7;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            background: #cba323;
+            border-radius: 20px;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 5px 9px;
+            background: #e5f7ec;
+            color: #168143;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tie-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #fff2d8;
+            color: #9a6500;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty-results {
+            background: white;
+            padding: 45px 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: #7b879b;
+        }
+
+        .empty-results h3 {
+            color: #152541;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 22px;
+            text-decoration: none;
+            color: #9b7800;
+            font-weight: 700;
+        }
+
+        .results-note {
+            padding: 15px;
+            background: #fff8e7;
+            border: 1px solid #f3dfad;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #7a5b12;
+            font-size: 14px;
+        }
+
+        @media(max-width: 700px) {
+            .results-main {
+                padding: 18px;
+            }
+
+            .results-filter select {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .results-filter button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-page">
+
+    <aside class="dashboard-sidebar">
+
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                 alt="SVM Logo">
+
+            <div>
+                <strong>SVM UDGIR</strong>
+                <span>Voting System</span>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+
+            <p class="menu-title">MAIN MENU</p>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('admin.elections') }}"
+               class="menu-item">
+                <span class="menu-icon">🗳️</span>
+                <span>Elections</span>
+            </a>
+
+            <a href="{{ url_for('admin.candidates') }}"
+               class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span>Candidates</span>
+            </a>
+
+            <p class="menu-title menu-space">MANAGEMENT</p>
+
+            <a href="{{ url_for('admin.results') }}"
+               class="menu-item active">
+                <span class="menu-icon">🏆</span>
+                <span>Results</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-mini">
+                <div class="admin-avatar">
+                    {{ session.get('admin_name', 'A')[0]|upper }}
+                </div>
+
+                <div class="admin-mini-info">
+                    <strong>{{ session.get('admin_name', 'Admin') }}</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('admin.logout') }}"
+               class="logout-btn">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    <main class="dashboard-main results-main">
+
+        <a href="{{ url_for('admin.dashboard') }}"
+           class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+        <header class="results-header">
+
+            <span class="dashboard-label">ELECTION MANAGEMENT</span>
+
+            <h1>Election Results 🏆</h1>
+
+            <p>View candidate vote counts and election results.</p>
+
+        </header>
+
+        <!-- Election selector -->
+        <section class="results-filter">
+
+            <form method="GET"
+                  action="{{ url_for('admin.results') }}">
+
+                <label for="election_id">
+                    <strong>Select Election:</strong>
+                </label>
+
+                <select name="election_id"
+                        id="election_id"
+                        required>
+
+                    {% for election in elections %}
+
+                        <option value="{{ election.id }}"
+                            {% if selected_election and election.id == selected_election.id %}
+                                selected
+                            {% endif %}>
+
+                            {{ election.title }} ({{ election.status }})
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit">
+                    View Results
+                </button>
+
+            </form>
+
+        </section>
+
+        {% if selected_election %}
+
+            <div class="results-note">
+                Viewing results for:
+                <strong>{{ selected_election.title }}</strong>.
+                {% if selected_election.status == 'ACTIVE' %}
+                    Election is still active; these results are provisional.
+                {% endif %}
+            </div>
+
+            {% if result_groups %}
+
+                {% for position in result_groups %}
+
+                    <section class="result-position">
+
+                        <div class="position-header">
+
+                            <h2>{{ position.position_name }}</h2>
+
+                            <span class="vote-total">
+                                {{ position.total_votes }} Total Votes
+                            </span>
+
+                        </div>
+
+                        {% if position.tie %}
+                            <div class="tie-badge">
+                                ⚖ Tie between candidates
+                            </div>
+                        {% endif %}
+
+                        {% for candidate in position.candidates %}
+
+                            <div class="candidate-result">
+
+                                <div class="candidate-info">
+
+                                    <div>
+
+                                        <span class="candidate-name">
+
+                                            {{ candidate.name }}
+
+                                            {% if candidate.is_winner %}
+                                                <span class="winner-badge">
+                                                    🏆 WINNER
+                                                </span>
+                                            {% endif %}
+
+                                        </span>
+
+                                        <div class="candidate-meta">
+                                            Roll No: {{ candidate.roll_number or 'N/A' }}
+                                            |
+                                            {{ candidate.department or 'N/A' }}
+                                            |
+                                            {{ candidate.year or 'N/A' }}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="candidate-votes">
+
+                                        {{ candidate.votes }} votes
+                                        ({{ candidate.percentage }}%)
+
+                                    </div>
+
+                                </div>
+
+                                <div class="result-bar">
+
+                                    <div class="result-bar-fill"
+                                         style="width: {{ candidate.percentage }}%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                        {% if not position.candidates %}
+
+                            <p>No candidates registered for this position.</p>
+
+                        {% endif %}
+
+                    </section>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-results">
+                    <h3>No Results Available</h3>
+                    <p>No positions or candidates have been added to this election yet.</p>
+                </div>
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="empty-results">
+                <h3>No Elections Found</h3>
+                <p>Create an election first to view results.</p>
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

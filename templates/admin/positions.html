@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Positions | SVM Online Voting
+    </title>
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/positions.css') }}"
+>
+
+</head>
+
+<body class="admin-dashboard-page">
+
+<div class="admin-layout">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="admin-sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                SVM
+            </div>
+
+            <div>
+                <h2>SVM Voting</h2>
+                <span>Administration</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('admin.dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('admin.elections') }}">
+                Elections
+            </a>
+
+            <a href="#" class="active">
+                Positions
+            </a>
+
+            <a href="#">
+                Candidates
+            </a>
+
+            <a href="#">
+                Students
+            </a>
+
+            <a href="#">
+                Results
+            </a>
+
+            <a href="#">
+                Voting Links
+            </a>
+
+            <a href="#">
+                Audit Logs
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-user">
+
+                <div class="admin-avatar">
+                    {{ session.get("admin_name", "A")[0]|upper }}
+                </div>
+
+                <div>
+
+                    <strong>
+                        {{ session.get("admin_name", "Administrator") }}
+                    </strong>
+
+                    <small>
+                        Administrator
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('admin.logout') }}"
+                class="sidebar-logout"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="admin-main">
+
+        <header class="admin-topbar">
+
+            <div>
+
+                <span class="page-kicker">
+                    ELECTION MANAGEMENT
+                </span>
+
+                <h1>
+                    Positions
+                </h1>
+
+                <p>
+                    Manage positions for
+                    <strong>
+                        {{ election.title }}
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <div class="topbar-status">
+
+                <span class="status-badge {{ election.status|lower }}">
+                    {{ election.status }}
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             FLASH MESSAGES
+             ================================================= -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- =================================================
+             BACK
+             ================================================= -->
+
+        <div class="position-back">
+
+            <a
+                href="{{ url_for('admin.elections') }}"
+                class="secondary-btn"
+            >
+                ← Back to Elections
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             ADD POSITION
+             ================================================= -->
+
+        <section class="position-create-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-kicker">
+                        POSITION SETUP
+                    </span>
+
+                    <h2>
+                        Add New Position
+                    </h2>
+
+                    <p>
+                        Create a position that students can vote for.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if election.status in ["UPCOMING", "ACTIVE"] %}
+
+                <form
+                    method="POST"
+                    action="{{
+                        url_for(
+                            'admin.create_position',
+                            election_id=election.id
+                        )
+                    }}"
+                    class="position-form"
+                >
+
+                    <div class="position-input-group">
+
+                        <label for="position_name">
+                            Position Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="position_name"
+                            name="position_name"
+                            placeholder="e.g. President"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        + Add Position
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="position-locked">
+
+                    <strong>
+                        Position management is locked.
+                    </strong>
+
+                    <span>
+                        This election is {{ election.status|lower }}.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =================================================
+             POSITIONS LIST
+             ================================================= -->
+
+        <section class="positions-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-kicker">
+                        CURRENT POSITIONS
+                    </span>
+
+                    <h2>
+                        Election Positions
+                    </h2>
+
+                </div>
+
+                <span class="position-count">
+                    {{ positions|length }}
+                    Position{% if positions|length != 1 %}s{% endif %}
+                </span>
+
+            </div>
+
+
+            {% if positions %}
+
+                <div class="positions-grid">
+
+                    {% for position in positions %}
+
+                        <article class="position-card">
+
+                            <div class="position-number">
+                                {{ loop.index }}
+                            </div>
+
+
+                            <div class="position-content">
+
+                                <span>
+                                    POSITION {{ loop.index }}
+                                </span>
+
+                                <h3>
+                                    {{ position.position_name }}
+                                </h3>
+
+                            </div>
+
+
+                            <div class="position-actions">
+
+                                {% if election.status == "UPCOMING" %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{
+                                            url_for(
+                                                'admin.edit_position',
+                                                position_id=position.id
+                                            )
+                                        }}"
+                                        class="inline-edit-form"
+                                    >
+
+                                        <input
+                                            type="text"
+                                            name="position_name"
+                                            value="{{ position.position_name }}"
+                                            maxlength="100"
+                                            required
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="small-btn edit"
+                                        >
+                                            Save
+                                        </button>
+
+                                    </form>
+
+
+                                    <form
+                                        method="POST"
+                                        action="{{
+                                            url_for(
+                                                'admin.delete_position',
+                                                position_id=position.id
+                                            )
+                                        }}"
+                                        onsubmit="return confirm(
+                                            'Are you sure you want to delete this position?'
+                                        );"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="small-btn delete"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <span class="position-readonly">
+                                        Locked
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="position-empty">
+
+                    <div class="empty-icon">
+                        +
+                    </div>
+
+                    <h3>
+                        No Positions Added
+                    </h3>
+
+                    <p>
+                        Add the first position for this election.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =================================================
+             INFO
+             ================================================= -->
+
+        <section class="position-info-card">
+
+            <div class="info-icon">
+                !
+            </div>
+
+            <div>
+
+                <h3>
+                    Position Management Rules
+                </h3>
+
+                <ul>
+
+                    <li>
+                        Position names must be unique within an election.
+                    </li>
+
+                    <li>
+                        Positions can be edited before the election starts.
+                    </li>
+
+                    <li>
+                        Positions cannot be deleted once candidates are assigned.
+                    </li>
+
+                    <li>
+                        After an election starts, position structure is locked.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </section>
+
+
+        <footer class="admin-footer">
+
+            <span>
+                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+            </span>
+
+            <span>
+                College Online Voting System
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

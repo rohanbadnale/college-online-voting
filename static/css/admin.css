@@ -1,7 +1,14 @@
 /* =========================================================
    SVM UDGIR - ADMIN PANEL
-   LOGIN + REGISTRATION CSS
+   CLEAN FINAL CSS
+   LOGIN + REGISTRATION + DASHBOARD
+   ELECTION + POSITION MANAGEMENT
    ========================================================= */
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 * {
     margin: 0;
@@ -23,7 +30,7 @@ body {
 
 /* =========================================================
    ADMIN LOGIN PAGE
-   ========================================================= */
+========================================================= */
 
 .admin-login-page {
     min-height: 100vh;
@@ -55,7 +62,7 @@ body {
 
 /* =========================================================
    LOGIN BACKGROUND
-   ========================================================= */
+========================================================= */
 
 .login-background {
     position: absolute;
@@ -83,7 +90,7 @@ body {
 
 /* =========================================================
    LOGIN CARD
-   ========================================================= */
+========================================================= */
 
 .login-card {
     width: 100%;
@@ -104,9 +111,6 @@ body {
         0 30px 80px rgba(0, 0, 0, 0.55),
         0 0 40px rgba(212, 175, 55, 0.04);
 }
-
-
-/* GOLD TOP LINE */
 
 .login-card::before {
     content: "";
@@ -130,11 +134,10 @@ body {
 
 /* =========================================================
    LOGIN LOGO
-   ========================================================= */
+========================================================= */
 
 .login-logo {
     text-align: center;
-
     margin-bottom: 20px;
 }
 
@@ -153,11 +156,10 @@ body {
 
 /* =========================================================
    LOGIN HEADING
-   ========================================================= */
+========================================================= */
 
 .login-heading {
     text-align: center;
-
     margin-bottom: 28px;
 }
 
@@ -169,34 +171,31 @@ body {
     color: #d4af37;
 
     font-size: 11px;
-
     font-weight: 700;
 
     letter-spacing: 2px;
 }
 
 .login-heading h1 {
+    margin-bottom: 6px;
+
     font-family: "Poppins", sans-serif;
 
     font-size: 28px;
-
     font-weight: 800;
 
     color: #ffffff;
-
-    margin-bottom: 6px;
 }
 
 .login-heading p {
     color: #8997aa;
-
     font-size: 13px;
 }
 
 
 /* =========================================================
    FLASH MESSAGES
-   ========================================================= */
+========================================================= */
 
 .flash-container {
     margin-bottom: 20px;
@@ -205,13 +204,12 @@ body {
 .flash {
     padding: 12px 14px;
 
+    margin-bottom: 8px;
+
     border-radius: 9px;
 
     font-size: 13px;
-
     line-height: 1.5;
-
-    margin-bottom: 8px;
 }
 
 .flash.success {
@@ -233,7 +231,7 @@ body {
 
 /* =========================================================
    LOGIN FORM
-   ========================================================= */
+========================================================= */
 
 .login-card .form-group {
     margin-bottom: 19px;
@@ -247,34 +245,29 @@ body {
     color: #dbe3ed;
 
     font-size: 13px;
-
     font-weight: 600;
 }
 
 
 /* =========================================================
    LOGIN INPUT
-   ========================================================= */
+========================================================= */
 
 .login-card .form-group > input {
     width: 100%;
-
     height: 50px;
 
     padding: 0 15px;
 
     border: 1px solid #2b4058;
-
     border-radius: 9px;
 
     outline: none;
 
     background: #071522;
-
     color: #ffffff;
 
     font-family: "Inter", sans-serif;
-
     font-size: 14px;
 
     transition: 0.25s ease;
@@ -300,33 +293,28 @@ body {
 
 /* =========================================================
    PASSWORD BOX
-   ========================================================= */
+========================================================= */
 
 .password-box {
     position: relative;
-
     width: 100%;
 }
 
 .password-box input {
     width: 100%;
-
     height: 50px;
 
     padding: 0 50px 0 15px;
 
     border: 1px solid #2b4058;
-
     border-radius: 9px;
 
     outline: none;
 
     background: #071522;
-
     color: #ffffff;
 
     font-family: "Inter", sans-serif;
-
     font-size: 14px;
 
     transition: 0.25s ease;
@@ -348,7 +336,7 @@ body {
 
 /* =========================================================
    SHOW PASSWORD
-   ========================================================= */
+========================================================= */
 
 .show-password {
     position: absolute;
@@ -362,11 +350,9 @@ body {
     height: 36px;
 
     border: none;
-
     border-radius: 7px;
 
     background: transparent;
-
     color: #78879a;
 
     cursor: pointer;
@@ -385,17 +371,15 @@ body {
 
 /* =========================================================
    LOGIN BUTTON
-   ========================================================= */
+========================================================= */
 
 .login-btn {
     width: 100%;
-
     height: 51px;
 
     margin-top: 5px;
 
     border: none;
-
     border-radius: 9px;
 
     background: linear-gradient(
@@ -410,7 +394,6 @@ body {
     font-family: "Inter", sans-serif;
 
     font-size: 13px;
-
     font-weight: 800;
 
     letter-spacing: 0.4px;
@@ -442,18 +425,16 @@ body {
 
 
 /* =========================================================
-   SECURITY NOTE
-   ========================================================= */
+   LOGIN SECURITY NOTE
+========================================================= */
 
 .login-card .security-note {
     display: flex;
-
     align-items: center;
 
     gap: 10px;
 
     margin-top: 23px;
-
     padding: 12px 14px;
 
     border-radius: 9px;
@@ -471,14 +452,13 @@ body {
     color: #8492a5;
 
     font-size: 10.5px;
-
     line-height: 1.5;
 }
 
 
 /* =========================================================
    BACK HOME
-   ========================================================= */
+========================================================= */
 
 .login-card .back-home {
     display: block;
@@ -502,10 +482,8 @@ body {
 
 
 /* =========================================================
-   =========================================================
    ADMIN REGISTRATION PAGE
-   =========================================================
-   ========================================================= */
+========================================================= */
 
 .admin-register-page {
     min-height: 100vh;
@@ -535,11 +513,12 @@ body {
 }
 
 
-/* Registration card */
+/* =========================================================
+   REGISTRATION CARD
+========================================================= */
 
 .register-card {
     width: 100%;
-
     max-width: 500px;
 
     position: relative;
@@ -577,11 +556,12 @@ body {
 }
 
 
-/* Registration logo */
+/* =========================================================
+   REGISTRATION LOGO
+========================================================= */
 
 .register-logo {
     text-align: center;
-
     margin-bottom: 18px;
 }
 
@@ -593,46 +573,46 @@ body {
 }
 
 
-/* Registration heading */
+/* =========================================================
+   REGISTRATION HEADING
+========================================================= */
 
 .register-heading {
     text-align: center;
-
     margin-bottom: 25px;
 }
 
 .register-heading span {
     display: block;
 
+    margin-bottom: 7px;
+
     color: #d4af37;
 
     font-size: 10px;
-
     font-weight: 700;
 
     letter-spacing: 1.8px;
-
-    margin-bottom: 7px;
 }
 
 .register-heading h1 {
+    margin-bottom: 6px;
+
     font-family: "Poppins", sans-serif;
 
     font-size: 25px;
-
     font-weight: 800;
-
-    margin-bottom: 6px;
 }
 
 .register-heading p {
     color: #8997aa;
-
     font-size: 12px;
 }
 
 
-/* Registration form */
+/* =========================================================
+   REGISTRATION FORM
+========================================================= */
 
 .register-card .form-group {
     margin-bottom: 16px;
@@ -646,25 +626,21 @@ body {
     color: #dbe3ed;
 
     font-size: 12px;
-
     font-weight: 600;
 }
 
 .register-card .form-group input {
     width: 100%;
-
     height: 48px;
 
     padding: 0 14px;
 
     border: 1px solid #2b4058;
-
     border-radius: 9px;
 
     outline: none;
 
     background: #071522;
-
     color: #ffffff;
 
     font-family: "Inter", sans-serif;
@@ -688,17 +664,17 @@ body {
 }
 
 
-/* Registration button */
+/* =========================================================
+   REGISTRATION BUTTON
+========================================================= */
 
 .register-btn {
     width: 100%;
-
     height: 50px;
 
     margin-top: 5px;
 
     border: none;
-
     border-radius: 9px;
 
     cursor: pointer;
@@ -713,7 +689,6 @@ body {
     color: #07111f;
 
     font-size: 13px;
-
     font-weight: 800;
 
     transition: 0.25s ease;
@@ -729,11 +704,12 @@ body {
 }
 
 
-/* Registration links */
+/* =========================================================
+   REGISTRATION LINKS
+========================================================= */
 
 .register-links {
     text-align: center;
-
     margin-top: 18px;
 }
 
@@ -743,18 +719,18 @@ body {
     text-decoration: none;
 
     font-size: 12px;
-
     font-weight: 600;
 }
 
 .register-links a:hover {
     text-decoration: underline;
-
     color: #f0d875;
 }
 
 
-/* Registration security */
+/* =========================================================
+   REGISTRATION SECURITY
+========================================================= */
 
 .register-security {
     margin-top: 20px;
@@ -772,94 +748,21 @@ body {
     border: 1px solid rgba(212, 175, 55, 0.12);
 
     font-size: 10.5px;
-
     line-height: 1.5;
 }
 
 
-/* =========================================================
-   MOBILE LOGIN
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .admin-login-page {
-        padding: 20px 15px;
-    }
-
-    .login-card {
-        padding: 32px 23px;
-
-        border-radius: 17px;
-    }
-
-    .login-logo img {
-        width: 78px;
-        height: 78px;
-    }
-
-    .login-heading h1 {
-        font-size: 24px;
-    }
-
-    .login-heading p {
-        font-size: 12px;
-    }
-
-    .login-btn {
-        font-size: 12px;
-    }
-
-
-    .register-card {
-        padding: 30px 22px;
-
-        border-radius: 17px;
-    }
-
-    .register-heading h1 {
-        font-size: 22px;
-    }
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-    .login-card {
-        padding: 28px 18px;
-    }
-
-    .login-heading h1 {
-        font-size: 22px;
-    }
-
-    .login-card .form-group > input,
-    .password-box input {
-        height: 47px;
-    }
-
-    .login-btn {
-        height: 48px;
-
-        font-size: 11px;
-    }
-
-    .register-card {
-        padding: 27px 18px;
-    }
-}
 /* =========================================================
    ADMIN DASHBOARD
 ========================================================= */
 
 .dashboard-page {
     min-height: 100vh;
+
     display: flex;
+
     background: #f5f7fb;
+
     font-family: "Inter", sans-serif;
 }
 
@@ -870,52 +773,81 @@ body {
 
 .dashboard-sidebar {
     width: 260px;
+    height: 100vh;
     min-height: 100vh;
+
     background: #07152f;
+
     color: #ffffff;
+
     display: flex;
     flex-direction: column;
+
     position: fixed;
+
     left: 0;
     top: 0;
     bottom: 0;
+
     z-index: 100;
+
+    overflow: hidden;
 }
+
+
+/* =========================================================
+   SIDEBAR LOGO
+========================================================= */
 
 .sidebar-logo {
     height: 90px;
+
     padding: 20px;
+
     display: flex;
     align-items: center;
+
     gap: 12px;
 }
 
 .sidebar-logo img {
     width: 50px;
     height: 50px;
+
     object-fit: contain;
+
     background: #ffffff;
+
     border-radius: 50%;
+
     padding: 4px;
 }
 
 .sidebar-logo strong {
     display: block;
+
     font-family: "Poppins", sans-serif;
+
     font-size: 17px;
+
     letter-spacing: 0.5px;
 }
 
 .sidebar-logo span {
     display: block;
+
     margin-top: 3px;
+
     color: #b9c3d6;
+
     font-size: 11px;
 }
 
 .sidebar-divider {
     height: 1px;
+
     background: rgba(255, 255, 255, 0.08);
+
     margin: 0 20px 20px;
 }
 
@@ -925,14 +857,42 @@ body {
 ========================================================= */
 
 .sidebar-menu {
+    flex: 1;
+
     padding: 0 15px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: #34415d;
+    border-radius: 10px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+    background: #c9a227;
 }
 
 .menu-title {
     margin: 10px 10px 8px;
+
     color: #7f8da8;
+
     font-size: 10px;
+
     font-weight: 800;
+
     letter-spacing: 1.5px;
 }
 
@@ -942,16 +902,25 @@ body {
 
 .menu-item {
     height: 48px;
+
     margin-bottom: 5px;
+
     padding: 0 14px;
+
     border-radius: 10px;
+
     display: flex;
     align-items: center;
+
     gap: 12px;
+
     color: #c8d0df;
+
     text-decoration: none;
+
     font-size: 14px;
     font-weight: 600;
+
     transition: 0.2s ease;
 }
 
@@ -962,13 +931,18 @@ body {
 
 .menu-item.active {
     background: #c9a227;
+
     color: #07152f;
-    box-shadow: 0 8px 20px rgba(201, 162, 39, 0.2);
+
+    box-shadow:
+        0 8px 20px rgba(201, 162, 39, 0.2);
 }
 
 .menu-icon {
     width: 24px;
+
     text-align: center;
+
     font-size: 17px;
 }
 
@@ -978,32 +952,44 @@ body {
 ========================================================= */
 
 .sidebar-bottom {
+    flex-shrink: 0;
+
     margin-top: auto;
+
     padding: 18px;
+
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .admin-mini {
     display: flex;
     align-items: center;
+
     gap: 10px;
+
     margin-bottom: 15px;
 }
 
 .admin-avatar,
 .header-avatar {
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     border-radius: 50%;
+
     background: #c9a227;
+
     color: #07152f;
+
     font-weight: 800;
 }
 
 .admin-avatar {
     width: 38px;
     height: 38px;
+
     font-size: 15px;
 }
 
@@ -1013,8 +999,11 @@ body {
 
 .admin-mini-info strong {
     display: block;
-    font-size: 12px;
+
     color: #ffffff;
+
+    font-size: 12px;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1022,28 +1011,40 @@ body {
 
 .admin-mini-info span {
     display: block;
+
     margin-top: 3px;
-    font-size: 10px;
+
     color: #8f9bb2;
+
+    font-size: 10px;
 }
 
 .logout-btn {
     height: 42px;
+
     border-radius: 9px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     gap: 8px;
+
     background: rgba(255, 255, 255, 0.06);
+
     color: #d7deea;
+
     text-decoration: none;
+
     font-size: 13px;
     font-weight: 700;
+
     transition: 0.2s ease;
 }
 
 .logout-btn:hover {
     background: rgba(220, 53, 69, 0.15);
+
     color: #ff8d98;
 }
 
@@ -1054,51 +1055,69 @@ body {
 
 .dashboard-main {
     width: calc(100% - 260px);
+
     margin-left: 260px;
+
     padding: 35px 40px;
 }
 
 
 /* =========================================================
-   HEADER
+   DASHBOARD HEADER
 ========================================================= */
 
 .dashboard-header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 25px;
+
     margin-bottom: 30px;
 }
 
 .dashboard-label {
     color: #b18b16;
+
     font-size: 11px;
     font-weight: 800;
+
     letter-spacing: 1.5px;
 }
 
 .dashboard-header h1 {
-    margin: 5px 0 5px;
+    margin: 5px 0;
+
     color: #07152f;
+
     font-family: "Poppins", sans-serif;
+
     font-size: 32px;
     font-weight: 800;
 }
 
 .dashboard-header p {
     margin: 0;
+
     color: #69758a;
+
     font-size: 14px;
 }
 
 .header-admin {
     display: flex;
+
     align-items: center;
+
     gap: 12px;
+
     padding: 10px 15px;
+
     background: #ffffff;
+
     border: 1px solid #e5e9f0;
+
     border-radius: 12px;
 }
 
@@ -1109,20 +1128,25 @@ body {
 
 .header-admin strong {
     display: block;
+
     color: #17233c;
+
     font-size: 13px;
 }
 
 .header-admin span {
     display: block;
+
     margin-top: 3px;
+
     color: #7b8799;
+
     font-size: 10px;
 }
 
 
 /* =========================================================
-   FLASH
+   DASHBOARD FLASH
 ========================================================= */
 
 .dashboard-flashes {
@@ -1131,8 +1155,11 @@ body {
 
 .dashboard-flash {
     padding: 12px 15px;
-    border-radius: 8px;
+
     margin-bottom: 8px;
+
+    border-radius: 8px;
+
     font-size: 13px;
     font-weight: 600;
 }
@@ -1154,37 +1181,55 @@ body {
 
 .stats-grid {
     display: grid;
+
     grid-template-columns: repeat(5, 1fr);
+
     gap: 16px;
+
     margin-bottom: 30px;
 }
 
 .stat-card {
     min-height: 135px;
+
     padding: 20px;
+
     background: #ffffff;
+
     border: 1px solid #e7ebf1;
+
     border-radius: 14px;
+
     display: flex;
     align-items: flex-start;
+
     gap: 14px;
-    box-shadow: 0 5px 20px rgba(7, 21, 47, 0.04);
+
+    box-shadow:
+        0 5px 20px rgba(7, 21, 47, 0.04);
+
     transition: 0.2s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(7, 21, 47, 0.08);
+
+    box-shadow:
+        0 10px 25px rgba(7, 21, 47, 0.08);
 }
 
 .stat-icon {
     width: 46px;
     height: 46px;
+
     flex-shrink: 0;
+
     border-radius: 11px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 20px;
 }
 
@@ -1210,58 +1255,74 @@ body {
 
 .stat-content span {
     display: block;
+
     color: #788397;
+
     font-size: 11px;
     font-weight: 600;
 }
 
 .stat-content strong {
     display: block;
+
     margin: 6px 0 3px;
+
     color: #07152f;
+
     font-family: "Poppins", sans-serif;
+
     font-size: 25px;
     font-weight: 800;
 }
 
 .stat-content small {
     color: #9aa4b5;
+
     font-size: 10px;
 }
 
 
 /* =========================================================
-   SECTIONS
+   DASHBOARD SECTIONS
 ========================================================= */
 
 .dashboard-section {
     margin-bottom: 30px;
 }
 
-.section-heading {
+.dashboard-section .section-heading {
     display: flex;
+
     align-items: flex-end;
     justify-content: space-between;
+
     margin-bottom: 15px;
 }
 
-.section-heading span {
+.dashboard-section .section-heading > div span {
     color: #b18b16;
+
     font-size: 10px;
     font-weight: 800;
+
     letter-spacing: 1.4px;
 }
 
-.section-heading h2 {
+.dashboard-section .section-heading h2 {
     margin: 4px 0 0;
+
     color: #07152f;
+
     font-family: "Poppins", sans-serif;
+
     font-size: 20px;
 }
 
 .view-all {
     color: #9a7815;
+
     text-decoration: none;
+
     font-size: 12px;
     font-weight: 700;
 }
@@ -1277,28 +1338,42 @@ body {
 
 .quick-actions {
     display: grid;
+
     grid-template-columns: repeat(2, 1fr);
+
     gap: 15px;
 }
 
 .quick-action {
     min-height: 82px;
+
     padding: 17px;
+
     background: #ffffff;
+
     border: 1px solid #e7ebf1;
+
     border-radius: 12px;
+
     display: flex;
     align-items: center;
+
     gap: 14px;
+
     text-decoration: none;
+
     color: #17233c;
+
     transition: 0.2s ease;
 }
 
 .quick-action:hover {
     border-color: #c9a227;
+
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(7, 21, 47, 0.06);
+
+    box-shadow:
+        0 8px 20px rgba(7, 21, 47, 0.06);
 }
 
 .quick-action.primary {
@@ -1308,32 +1383,44 @@ body {
 .quick-icon {
     width: 42px;
     height: 42px;
+
     flex-shrink: 0;
+
     border-radius: 10px;
+
     background: #f1f4f9;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     color: #9a7815;
+
     font-size: 19px;
     font-weight: 800;
 }
 
 .quick-action strong {
     display: block;
+
     font-size: 13px;
 }
 
 .quick-action span {
     display: block;
+
     margin-top: 4px;
+
     color: #7d889a;
+
     font-size: 11px;
 }
 
 .quick-action b {
     margin-left: auto;
+
     color: #a1aabb;
+
     font-size: 18px;
 }
 
@@ -1344,33 +1431,49 @@ body {
 
 .election-table-wrapper {
     background: #ffffff;
+
     border: 1px solid #e7ebf1;
+
     border-radius: 14px;
+
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(7, 21, 47, 0.04);
+
+    box-shadow:
+        0 5px 20px rgba(7, 21, 47, 0.04);
 }
 
 .election-table {
     width: 100%;
+
     border-collapse: collapse;
 }
 
 .election-table th {
     padding: 15px 18px;
+
     background: #f8f9fb;
+
     border-bottom: 1px solid #e7ebf1;
+
     color: #788397;
+
     font-size: 10px;
     font-weight: 800;
+
     text-align: left;
+
     text-transform: uppercase;
+
     letter-spacing: 0.8px;
 }
 
 .election-table td {
     padding: 16px 18px;
+
     border-bottom: 1px solid #edf0f4;
+
     color: #26334a;
+
     font-size: 12px;
 }
 
@@ -1385,14 +1488,18 @@ body {
 .election-name {
     display: flex;
     align-items: center;
+
     gap: 11px;
 }
 
 .election-icon {
     width: 36px;
     height: 36px;
+
     border-radius: 9px;
+
     background: #f2f5fa;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1400,33 +1507,50 @@ body {
 
 .election-name strong {
     display: block;
+
     color: #17233c;
+
     font-size: 12px;
 }
 
 .election-name span {
     display: block;
+
     margin-top: 3px;
+
     color: #9aa4b5;
+
     font-size: 9px;
 }
 
 .date-text {
     display: block;
+
     font-weight: 600;
 }
 
 .election-table td small {
     display: block;
+
     margin-top: 3px;
+
     color: #9aa4b5;
+
     font-size: 9px;
 }
 
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
 .status-badge {
     display: inline-block;
+
     padding: 6px 9px;
+
     border-radius: 20px;
+
     font-size: 9px;
     font-weight: 800;
 }
@@ -1451,9 +1575,16 @@ body {
     color: #a82c38;
 }
 
+
+/* =========================================================
+   TABLE ACTION
+========================================================= */
+
 .table-action {
     color: #9a7815;
+
     text-decoration: none;
+
     font-size: 11px;
     font-weight: 700;
 }
@@ -1469,43 +1600,62 @@ body {
 
 .empty-state {
     padding: 55px 20px;
+
     text-align: center;
 }
 
-.empty-icon {
+.empty-state .empty-icon {
     width: 65px;
     height: 65px;
+
     margin: 0 auto 15px;
+
     border-radius: 50%;
+
     background: #f3f5f9;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 27px;
 }
 
 .empty-state h3 {
     margin: 0;
+
     color: #17233c;
+
     font-family: "Poppins", sans-serif;
+
     font-size: 18px;
 }
 
 .empty-state p {
     max-width: 420px;
+
     margin: 8px auto 20px;
+
     color: #8490a2;
+
     font-size: 12px;
+
     line-height: 1.6;
 }
 
 .empty-btn {
     display: inline-block;
+
     padding: 10px 17px;
+
     border-radius: 8px;
+
     background: #07152f;
+
     color: #ffffff;
+
     text-decoration: none;
+
     font-size: 11px;
     font-weight: 700;
 }
@@ -1517,12 +1667,18 @@ body {
 
 .system-info {
     padding: 18px 20px;
+
     margin-bottom: 25px;
+
     background: #fffaf0;
+
     border: 1px solid #f0dfae;
+
     border-radius: 12px;
+
     display: flex;
     align-items: flex-start;
+
     gap: 13px;
 }
 
@@ -1532,438 +1688,60 @@ body {
 
 .system-info strong {
     display: block;
+
     color: #72580c;
+
     font-size: 12px;
 }
 
 .system-info p {
     margin: 5px 0 0;
+
     color: #8b7741;
+
     font-size: 10px;
+
     line-height: 1.6;
 }
 
 
 /* =========================================================
-   FOOTER
+   DASHBOARD FOOTER
 ========================================================= */
 
 .dashboard-footer {
     padding: 20px 0 5px;
+
     border-top: 1px solid #e2e6ed;
+
     display: flex;
+
     justify-content: space-between;
+
     color: #8d98a9;
+
     font-size: 10px;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   GENERAL ACTION BUTTON
 ========================================================= */
-
-@media (max-width: 1200px) {
-
-    .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-}
-
-
-@media (max-width: 900px) {
-
-    .dashboard-sidebar {
-        width: 220px;
-    }
-
-    .dashboard-main {
-        width: calc(100% - 220px);
-        margin-left: 220px;
-        padding: 25px;
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .dashboard-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-}
-
-
-@media (max-width: 650px) {
-
-    .dashboard-sidebar {
-        width: 100%;
-        min-height: auto;
-        position: relative;
-    }
-
-    .dashboard-page {
-        display: block;
-    }
-
-    .dashboard-main {
-        width: 100%;
-        margin-left: 0;
-        padding: 20px 15px;
-    }
-
-    .sidebar-menu {
-        display: none;
-    }
-
-    .sidebar-bottom {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .admin-mini {
-        margin: 0;
-    }
-
-    .logout-btn {
-        margin-left: auto;
-        padding: 0 14px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .quick-actions {
-        grid-template-columns: 1fr;
-    }
-
-    .header-admin {
-        width: 100%;
-    }
-
-    .election-table-wrapper {
-        overflow-x: auto;
-    }
-
-    .election-table {
-        min-width: 700px;
-    }
-
-    .dashboard-footer {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-}
-/* =========================================================
-   LEFT SIDEBAR SCROLL FIX
-========================================================= */
-
-.dashboard-sidebar {
-    height: 100vh;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-/* Sidebar menu scrolling */
-.sidebar-menu {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-}
-
-/* Chrome / Edge scrollbar */
-.sidebar-menu::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar-menu::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.sidebar-menu::-webkit-scrollbar-thumb {
-    background: #34415d;
-    border-radius: 10px;
-}
-
-.sidebar-menu::-webkit-scrollbar-thumb:hover {
-    background: #c9a227;
-}
-
-/* Bottom admin section stays fixed */
-.sidebar-bottom {
-    flex-shrink: 0;
-}
-/* =========================================================
-   ELECTION MANAGEMENT
-========================================================= */
-
-.election-create-top {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    border-radius: 9px;
-    background: #07152f;
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 700;
-    transition: 0.2s ease;
-}
-
-.election-create-top:hover {
-    background: #c9a227;
-    color: #07152f;
-}
-
-
-/* CREATE CARD */
-
-.election-create-card {
-    margin-bottom: 30px;
-    padding: 25px;
-    background: #ffffff;
-    border: 1px solid #e5e9f0;
-    border-radius: 14px;
-    box-shadow: 0 5px 20px rgba(7, 21, 47, 0.04);
-}
-
-.election-form-heading {
-    margin-bottom: 22px;
-}
-
-.election-form-heading span {
-    color: #b18b16;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.4px;
-}
-
-.election-form-heading h2 {
-    margin: 4px 0 0;
-    color: #07152f;
-    font-family: "Poppins", sans-serif;
-    font-size: 21px;
-}
-
-
-/* FORM GRID */
-
-.election-form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-.election-form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.election-form-group.full {
-    grid-column: 1 / -1;
-}
-
-.election-form-group label {
-    margin-bottom: 7px;
-    color: #27344b;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.election-form-group input,
-.election-form-group textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 13px;
-    border: 1px solid #dfe4ec;
-    border-radius: 8px;
-    outline: none;
-    background: #fbfcfe;
-    color: #17233c;
-    font-family: "Inter", sans-serif;
-    font-size: 12px;
-    transition: 0.2s ease;
-}
-
-.election-form-group textarea {
-    resize: vertical;
-}
-
-.election-form-group input:focus,
-.election-form-group textarea:focus {
-    border-color: #c9a227;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.08);
-}
-
-
-/* FORM FOOTER */
-
-.election-form-footer {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid #edf0f4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.election-form-footer span {
-    color: #8994a5;
-    font-size: 10px;
-}
-
-.election-form-footer strong {
-    color: #9a7815;
-}
-
-.create-election-btn {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    background: #c9a227;
-    color: #07152f;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 800;
-    transition: 0.2s ease;
-}
-
-.create-election-btn:hover {
-    background: #07152f;
-    color: #ffffff;
-}
-
-
-/* ELECTION COUNT */
-
-.election-count {
-    padding: 7px 11px;
-    border-radius: 20px;
-    background: #edf1f7;
-    color: #667389;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-
-/* ELECTION LIST */
-
-.elections-list {
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
-}
-
-.election-management-card {
-    padding: 20px;
-    background: #ffffff;
-    border: 1px solid #e5e9f0;
-    border-radius: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 25px;
-    box-shadow: 0 4px 15px rgba(7, 21, 47, 0.03);
-    transition: 0.2s ease;
-}
-
-.election-management-card:hover {
-    border-color: #d5bd6a;
-    box-shadow: 0 8px 22px rgba(7, 21, 47, 0.06);
-}
-
-
-/* ELECTION INFO */
-
-.election-card-main {
-    min-width: 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.election-card-icon {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    border-radius: 11px;
-    background: #f2f5fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 21px;
-}
-
-.election-card-info {
-    min-width: 0;
-}
-
-.election-card-info h3 {
-    margin: 0;
-    color: #17233c;
-    font-family: "Poppins", sans-serif;
-    font-size: 15px;
-}
-
-.election-card-info p {
-    max-width: 650px;
-    margin: 5px 0 10px;
-    color: #7c8799;
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-.election-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.election-meta span {
-    padding: 5px 8px;
-    border-radius: 5px;
-    background: #f6f7fa;
-    color: #7b8799;
-    font-size: 9px;
-}
-
-
-/* CARD SIDE */
-
-.election-card-side {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-}
-
-.election-actions {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.election-actions form {
-    margin: 0;
-}
 
 .action-btn {
     padding: 7px 10px;
+
     border: none;
+
     border-radius: 6px;
+
     cursor: pointer;
+
     font-family: "Inter", sans-serif;
+
     font-size: 9px;
     font-weight: 700;
+
     transition: 0.2s ease;
 }
 
@@ -1999,25 +1777,1423 @@ body {
 
 
 /* =========================================================
-   ELECTION RESPONSIVE
+   CANDIDATE ACTION BUTTON
+========================================================= */
+
+.action-btn.candidate {
+    background: #f4f0fa;
+
+    color: #6b46a1;
+
+    border: 1px solid rgba(107, 70, 161, 0.18);
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.action-btn.candidate:hover {
+    background: #eae1f7;
+    color: #54327f;
+}
+
+
+/* =========================================================
+   POSITION ACTION BUTTON
+========================================================= */
+
+.action-btn.position {
+    background: #f8f5ed;
+
+    color: #8a651d;
+
+    border: 1px solid rgba(178, 138, 46, 0.18);
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn.position:hover {
+    background: #f3ead5;
+    color: #735315;
+}
+
+
+/* =========================================================
+   ELECTION MANAGEMENT
+========================================================= */
+
+.election-create-top {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 18px;
+
+    border-radius: 9px;
+
+    background: #07152f;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.election-create-top:hover {
+    background: #c9a227;
+    color: #07152f;
+}
+
+
+/* =========================================================
+   ELECTION CREATE CARD
+========================================================= */
+
+.election-create-card {
+    margin-bottom: 30px;
+
+    padding: 25px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e9f0;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 20px rgba(7, 21, 47, 0.04);
+}
+
+.election-form-heading {
+    margin-bottom: 22px;
+}
+
+.election-form-heading span {
+    color: #b18b16;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+}
+
+.election-form-heading h2 {
+    margin: 4px 0 0;
+
+    color: #07152f;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   ELECTION FORM GRID
+========================================================= */
+
+.election-form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+.election-form-group {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.election-form-group.full {
+    grid-column: 1 / -1;
+}
+
+.election-form-group label {
+    margin-bottom: 7px;
+
+    color: #27344b;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.election-form-group input,
+.election-form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    border: 1px solid #dfe4ec;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #fbfcfe;
+
+    color: #17233c;
+
+    font-family: "Inter", sans-serif;
+
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.election-form-group textarea {
+    resize: vertical;
+}
+
+.election-form-group input:focus,
+.election-form-group textarea:focus {
+    border-color: #c9a227;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(201, 162, 39, 0.08);
+}
+
+
+/* =========================================================
+   ELECTION FORM FOOTER
+========================================================= */
+
+.election-form-footer {
+    margin-top: 22px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #edf0f4;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.election-form-footer span {
+    color: #8994a5;
+
+    font-size: 10px;
+}
+
+.election-form-footer strong {
+    color: #9a7815;
+}
+
+.create-election-btn {
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #c9a227;
+
+    color: #07152f;
+
+    cursor: pointer;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    transition: 0.2s ease;
+}
+
+.create-election-btn:hover {
+    background: #07152f;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ELECTION COUNT
+========================================================= */
+
+.election-count {
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    background: #edf1f7;
+
+    color: #667389;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ELECTION LIST
+========================================================= */
+
+.elections-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+.election-management-card {
+    padding: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e9f0;
+
+    border-radius: 13px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    box-shadow:
+        0 4px 15px rgba(7, 21, 47, 0.03);
+
+    transition: 0.2s ease;
+}
+
+.election-management-card:hover {
+    border-color: #d5bd6a;
+
+    box-shadow:
+        0 8px 22px rgba(7, 21, 47, 0.06);
+}
+
+
+/* =========================================================
+   ELECTION INFO
+========================================================= */
+
+.election-card-main {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 15px;
+}
+
+.election-card-icon {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    background: #f2f5fa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.election-card-info {
+    min-width: 0;
+}
+
+.election-card-info h3 {
+    margin: 0;
+
+    color: #17233c;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 15px;
+}
+
+.election-card-info p {
+    max-width: 650px;
+
+    margin: 5px 0 10px;
+
+    color: #7c8799;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+.election-meta {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.election-meta span {
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    background: #f6f7fa;
+
+    color: #7b8799;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   ELECTION CARD SIDE
+========================================================= */
+
+.election-card-side {
+    flex-shrink: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 12px;
+}
+
+.election-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.election-actions form {
+    margin: 0;
+}
+
+
+/* =========================================================
+   POSITION MANAGEMENT
+========================================================= */
+
+.positions-page {
+    padding: 28px;
+}
+
+
+/* =========================================================
+   POSITION HEADER
+========================================================= */
+
+.positions-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.positions-header h1 {
+    margin: 0;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.positions-header p {
+    margin: 6px 0 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   POSITION BACK BUTTON
+========================================================= */
+
+.position-back {
+    margin-bottom: 22px;
+}
+
+.secondary-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    border: 1px solid rgba(15, 23, 42, 0.12);
+
+    color: #334155;
+
+    background: #ffffff;
+
+    transition: 0.2s ease;
+}
+
+.secondary-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.position-back .secondary-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    text-decoration: none;
+}
+
+.back-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    background: #f3f4f6;
+
+    color: #374151;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border: 1px solid #e5e7eb;
+
+    transition: 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #e5e7eb;
+}
+
+
+/* =========================================================
+   ELECTION INFORMATION CARD
+========================================================= */
+
+.election-info-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.election-info-card h2 {
+    margin: 0 0 8px;
+
+    font-size: 20px;
+
+    color: #111827;
+}
+
+.election-info-card p {
+    margin: 5px 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   POSITION CREATE CARD
+========================================================= */
+
+.position-create-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    margin-bottom: 28px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   POSITION SECTION HEADING
+========================================================= */
+
+.position-create-card .section-heading,
+.positions-section .section-heading {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.position-create-card .section-kicker,
+.positions-section .section-kicker {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #6b46a1;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+}
+
+.position-create-card .section-heading h2,
+.positions-section .section-heading h2 {
+    margin: 0;
+
+    color: #1f2937;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+.position-create-card .section-heading p,
+.positions-section .section-heading p {
+    margin: 7px 0 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   ADD POSITION FORM
+========================================================= */
+
+.position-form {
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 15px;
+
+    width: 100%;
+}
+
+.position-input-group {
+    flex: 1;
+}
+
+.position-input-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.position-input-group input,
+.position-form input {
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 14px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: all 0.2s ease;
+}
+
+.position-input-group input::placeholder,
+.position-form input::placeholder {
+    color: #9ca3af;
+}
+
+.position-input-group input:focus,
+.position-form input:focus {
+    border-color: #6b46a1;
+
+    box-shadow:
+        0 0 0 3px rgba(107, 70, 161, 0.10);
+}
+
+
+/* =========================================================
+   POSITION PRIMARY BUTTON
+========================================================= */
+
+.position-create-card .primary-btn,
+.add-position-btn {
+    height: 46px;
+
+    padding: 0 20px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #6b46a1;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.position-create-card .primary-btn:hover,
+.add-position-btn:hover {
+    background: #54327f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   POSITION LOCKED MESSAGE
+========================================================= */
+
+.position-locked {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    border-radius: 9px;
+
+    background: #f9fafb;
+
+    border: 1px solid #e5e7eb;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.position-locked strong {
+    color: #374151;
+}
+
+
+/* =========================================================
+   POSITIONS SECTION
+========================================================= */
+
+.positions-section {
+    margin-bottom: 28px;
+}
+
+.positions-section .section-heading {
+    margin-bottom: 16px;
+}
+
+.position-count {
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background: #f4f0fa;
+
+    color: #6b46a1;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   POSITIONS GRID
+========================================================= */
+
+.positions-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(320px, 1fr));
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   POSITION CARD
+========================================================= */
+
+.position-card {
+    position: relative;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.04);
+
+    transition: all 0.2s ease;
+}
+
+.position-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #ddd0ed;
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   POSITION NUMBER
+========================================================= */
+
+.position-number {
+    flex-shrink: 0;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #f4f0fa;
+
+    color: #6b46a1;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   POSITION CONTENT
+========================================================= */
+
+.position-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.position-content > span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #9ca3af;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.position-content h3 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   POSITION ACTIONS
+========================================================= */
+
+.position-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    min-width: 105px;
+}
+
+.inline-edit-form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.inline-edit-form input {
+    width: 100%;
+
+    height: 36px;
+
+    box-sizing: border-box;
+
+    padding: 0 9px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    outline: none;
+}
+
+.inline-edit-form input:focus {
+    border-color: #6b46a1;
+
+    box-shadow:
+        0 0 0 2px rgba(107, 70, 161, 0.08);
+}
+
+
+/* =========================================================
+   POSITION SMALL BUTTONS
+========================================================= */
+
+.small-btn {
+    width: 100%;
+
+    min-height: 34px;
+
+    padding: 7px 10px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.small-btn.edit {
+    border: 1px solid #ddd0ed;
+
+    background: #f4f0fa;
+
+    color: #6b46a1;
+}
+
+.small-btn.edit:hover {
+    background: #e9ddf6;
+}
+
+.small-btn.delete {
+    border: 1px solid #fecaca;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+}
+
+.small-btn.delete:hover {
+    background: #fee2e2;
+}
+
+
+/* =========================================================
+   POSITION READONLY
+========================================================= */
+
+.position-readonly {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 7px 12px;
+
+    border-radius: 7px;
+
+    background: #f3f4f6;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   POSITION EMPTY
+========================================================= */
+
+.position-empty {
+    text-align: center;
+
+    padding: 55px 25px;
+
+    background: #ffffff;
+
+    border: 1px dashed #d1d5db;
+
+    border-radius: 14px;
+}
+
+.position-empty .empty-icon {
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f4f0fa;
+
+    color: #6b46a1;
+
+    font-size: 28px;
+
+    font-weight: 300;
+}
+
+.position-empty h3 {
+    margin: 0 0 6px;
+
+    color: #374151;
+
+    font-size: 17px;
+}
+
+.position-empty p {
+    margin: 0;
+
+    color: #9ca3af;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   POSITION INFORMATION CARD
+========================================================= */
+
+.position-info-card {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+    padding: 20px 22px;
+
+    margin-bottom: 30px;
+
+    background: #faf9fc;
+
+    border: 1px solid #e7e1ef;
+
+    border-radius: 14px;
+}
+
+.info-icon {
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f4f0fa;
+
+    color: #6b46a1;
+
+    font-weight: 700;
+}
+
+.position-info-card h3 {
+    margin: 2px 0 10px;
+
+    color: #374151;
+
+    font-size: 15px;
+}
+
+.position-info-card ul {
+    margin: 0;
+
+    padding-left: 18px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   POSITION ADDITIONAL OLD-STYLE CARD SUPPORT
+========================================================= */
+
+.add-position-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 25px;
+}
+
+.add-position-card h3 {
+    margin: 0 0 16px;
+
+    font-size: 18px;
+
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   RESPONSIVE - LARGE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-sidebar {
+        width: 220px;
+    }
+
+    .dashboard-main {
+        width: calc(100% - 220px);
+
+        margin-left: 220px;
+
+        padding: 25px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .election-management-card {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .election-card-side {
+        width: 100%;
+
+        align-items: flex-start;
+    }
+
+    .positions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .position-card {
+        flex-wrap: wrap;
+    }
+
+    .position-actions {
+        width: 100%;
+
+        flex-direction: row;
+
+        align-items: center;
+    }
+
+    .inline-edit-form {
+        flex: 1;
+
+        flex-direction: row;
+    }
+
+    .inline-edit-form input {
+        flex: 1;
+    }
+
+    .small-btn {
+        width: auto;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - 850
 ========================================================= */
 
 @media (max-width: 850px) {
 
     .election-management-card {
         align-items: flex-start;
+
         flex-direction: column;
     }
 
     .election-card-side {
         width: 100%;
+
         align-items: flex-start;
     }
 
 }
 
 
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
 @media (max-width: 650px) {
+
+    /* Login */
+
+    .admin-login-page {
+        padding: 20px 15px;
+    }
+
+    .login-card {
+        padding: 32px 23px;
+
+        border-radius: 17px;
+    }
+
+    .login-logo img {
+        width: 78px;
+        height: 78px;
+    }
+
+    .login-heading h1 {
+        font-size: 24px;
+    }
+
+    .login-heading p {
+        font-size: 12px;
+    }
+
+    .login-btn {
+        font-size: 12px;
+    }
+
+
+    /* Register */
+
+    .register-card {
+        padding: 30px 22px;
+
+        border-radius: 17px;
+    }
+
+    .register-heading h1 {
+        font-size: 22px;
+    }
+
+
+    /* Dashboard */
+
+    .dashboard-sidebar {
+        width: 100%;
+
+        min-height: auto;
+
+        position: relative;
+    }
+
+    .dashboard-page {
+        display: block;
+    }
+
+    .dashboard-main {
+        width: 100%;
+
+        margin-left: 0;
+
+        padding: 20px 15px;
+    }
+
+    .sidebar-menu {
+        display: none;
+    }
+
+    .sidebar-bottom {
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+    }
+
+    .admin-mini {
+        margin: 0;
+    }
+
+    .logout-btn {
+        margin-left: auto;
+
+        padding: 0 14px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .header-admin {
+        width: 100%;
+    }
+
+    .election-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .election-table {
+        min-width: 700px;
+    }
+
+    .dashboard-footer {
+        flex-direction: column;
+
+        gap: 6px;
+    }
+
+
+    /* Election */
 
     .election-form-grid {
         grid-template-columns: 1fr;
@@ -2029,6 +3205,7 @@ body {
 
     .election-form-footer {
         align-items: flex-start;
+
         flex-direction: column;
     }
 
@@ -2042,6 +3219,105 @@ body {
 
     .election-card-main {
         width: 100%;
+    }
+
+
+    /* Position */
+
+    .positions-page {
+        padding: 18px;
+    }
+
+    .positions-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .position-create-card {
+        padding: 18px;
+    }
+
+    .position-form {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .position-create-card .primary-btn,
+    .add-position-btn {
+        width: 100%;
+    }
+
+    .position-create-card .section-heading,
+    .positions-section .section-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .position-card {
+        padding: 16px;
+    }
+
+    .position-actions {
+        flex-direction: column;
+    }
+
+    .inline-edit-form {
+        width: 100%;
+
+        flex-direction: column;
+    }
+
+    .inline-edit-form input {
+        width: 100%;
+    }
+
+    .small-btn {
+        width: 100%;
+    }
+
+    .position-info-card {
+        padding: 16px;
+    }
+
+    .positions-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .login-card {
+        padding: 28px 18px;
+    }
+
+    .login-heading h1 {
+        font-size: 22px;
+    }
+
+    .login-card .form-group > input,
+    .password-box input {
+        height: 47px;
+    }
+
+    .login-btn {
+        height: 48px;
+
+        font-size: 11px;
+    }
+
+    .register-card {
+        padding: 27px 18px;
     }
 
 }

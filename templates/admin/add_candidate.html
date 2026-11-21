@@ -1,0 +1,964 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Add Candidate | SVM Udgir</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        .candidate-form-page {
+            max-width: 1050px;
+        }
+
+        .form-page-header {
+            margin-bottom: 28px;
+        }
+
+        .form-page-header .label {
+            color: #a17a25;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .form-page-header h1 {
+            margin: 6px 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .form-page-header p {
+            margin: 0;
+            color: #777;
+        }
+
+        .form-card {
+            background: #fff;
+            border: 1px solid #ececec;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 28px rgba(0,0,0,.04);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            margin-bottom: 18px;
+        }
+
+        .form-section-title span {
+            color: #a17a25;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .form-section-title h2 {
+            margin: 4px 0 0;
+            font-family: "Poppins", sans-serif;
+            font-size: 18px;
+        }
+
+        .candidate-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .form-group label span {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 12px 13px;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+            transition: .2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #b28a2e;
+            box-shadow: 0 0 0 3px rgba(178,138,46,.10);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.55;
+        }
+
+        .photo-upload-box {
+            border: 1px dashed #cfcfcf;
+            border-radius: 14px;
+            padding: 25px;
+            text-align: center;
+            background: #fafafa;
+        }
+
+        .photo-upload-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: #f5efe2;
+            color: #8a651d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .photo-upload-box strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .photo-upload-box small {
+            display: block;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .photo-upload-box input[type="file"] {
+            max-width: 100%;
+            border: 0;
+            padding: 0;
+            background: transparent;
+        }
+
+        .election-readonly {
+            background: #f8f8f8 !important;
+            color: #666;
+        }
+
+        .form-note {
+            margin-top: 7px;
+            color: #888;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding-top: 24px;
+            border-top: 1px solid #eee;
+        }
+
+        .form-footer-note {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-btn {
+            min-width: 130px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: #fff;
+            color: #444;
+        }
+
+        .form-btn:hover {
+            background: #f7f7f7;
+        }
+
+        .form-btn.primary {
+            background: #171717;
+            border-color: #171717;
+            color: #fff;
+        }
+
+        .form-btn.primary:hover {
+            background: #000;
+        }
+
+        .flash-message {
+            margin-bottom: 20px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .flash-message.success {
+            background: #eaf7ee;
+            color: #26733d;
+        }
+
+        .flash-message.error,
+        .flash-message.danger {
+            background: #fcecec;
+            color: #a33131;
+        }
+
+        @media (max-width: 750px) {
+
+            .candidate-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-actions {
+                width: 100%;
+            }
+
+            .form-btn {
+                flex: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="dashboard-page">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="dashboard-sidebar">
+
+
+        <div class="sidebar-logo">
+
+            <img
+                src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                alt="SVM Udgir Logo">
+
+            <div>
+
+                <strong>SVM UDGIR</strong>
+
+                <span>Voting System</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-divider"></div>
+
+
+        <nav class="sidebar-menu">
+
+            <p class="menu-title">
+                MAIN MENU
+            </p>
+
+
+            <a
+                href="{{ url_for('admin.dashboard') }}"
+                class="menu-item">
+
+                <span class="menu-icon">📊</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="{{ url_for('admin.elections') }}"
+                class="menu-item">
+
+                <span class="menu-icon">🗳️</span>
+
+                Elections
+
+            </a>
+
+
+            <a
+                href="{{ url_for('admin.candidates') }}"
+                class="menu-item active">
+
+                <span class="menu-icon">👤</span>
+
+                Candidates
+
+            </a>
+
+
+            <a
+                href="#"
+                class="menu-item">
+
+                <span class="menu-icon">🎓</span>
+
+                Students
+
+            </a>
+
+
+            <p class="menu-title menu-space">
+                MANAGEMENT
+            </p>
+
+
+            <a
+                href="#"
+                class="menu-item">
+
+                <span class="menu-icon">🏆</span>
+
+                Results
+
+            </a>
+
+
+            <a
+                href="#"
+                class="menu-item">
+
+                <span class="menu-icon">🔗</span>
+
+                Voting Links
+
+            </a>
+
+
+            <a
+                href="#"
+                class="menu-item">
+
+                <span class="menu-icon">📋</span>
+
+                Audit Logs
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-mini">
+
+                <div class="admin-avatar">
+
+                    {{ session.get("admin_name", "A")[0]|upper }}
+
+                </div>
+
+                <div class="admin-mini-info">
+
+                    <strong>
+                        {{ session.get("admin_name", "Administrator") }}
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('admin.logout') }}"
+                class="logout-btn">
+
+                🚪 Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="dashboard-main">
+
+
+        <div class="candidate-form-page">
+
+
+            <!-- HEADER -->
+
+            <div class="form-page-header">
+
+                <span class="label">
+                    CANDIDATE MANAGEMENT
+                </span>
+
+                <h1>
+                    Add Candidate
+                </h1>
+
+                <p>
+                    Add a candidate to the selected election.
+                </p>
+
+            </div>
+
+
+
+            <!-- FLASH MESSAGES -->
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="flash-message {{ category }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+
+            <!-- FORM -->
+
+            <div class="form-card">
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for('admin.create_candidate', election_id=election.id) }}"
+                    enctype="multipart/form-data">
+
+
+                    <!-- =================================================
+                         ELECTION
+                         ================================================= -->
+
+                    <section class="form-section">
+
+                        <div class="form-section-title">
+
+                            <span>
+                                ELECTION
+                            </span>
+
+                            <h2>
+                                Election Details
+                            </h2>
+
+                        </div>
+
+
+                        <div class="candidate-form-grid">
+
+
+                            <div class="form-group full">
+
+                                <label>
+                                    Election
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="election-readonly"
+                                    value="{{ election.title }}"
+                                    readonly>
+
+                                <div class="form-note">
+
+                                    Candidate will be added to this election.
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="position_id">
+                                    Position
+                                </label>
+
+                                <select
+                                    id="position_id"
+                                    name="position_id"
+                                    required>
+
+                                    <option value="">
+                                        Select Position
+                                    </option>
+
+                                    {% for position in positions %}
+
+                                        <option value="{{ position.id }}">
+
+                                            {{ position.position_name }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Election Status
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="election-readonly"
+                                    value="{{ election.status }}"
+                                    readonly>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         CANDIDATE INFORMATION
+                         ================================================= -->
+
+                    <section class="form-section">
+
+                        <div class="form-section-title">
+
+                            <span>
+                                PERSONAL INFORMATION
+                            </span>
+
+                            <h2>
+                                Candidate Details
+                            </h2>
+
+                        </div>
+
+
+                        <div class="candidate-form-grid">
+
+
+                            <!-- NAME -->
+
+                            <div class="form-group">
+
+                                <label for="name">
+                                    Candidate Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Enter full name"
+                                    maxlength="100"
+                                    required>
+
+                            </div>
+
+
+                            <!-- ROLL NUMBER -->
+
+                            <div class="form-group">
+
+                                <label for="roll_number">
+                                    Roll Number
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="roll_number"
+                                    name="roll_number"
+                                    placeholder="Example: BCA2026001"
+                                    maxlength="50">
+
+                            </div>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <div class="form-group">
+
+                                <label for="department">
+                                    Department
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="department"
+                                    name="department"
+                                    placeholder="Example: BCA"
+                                    maxlength="100">
+
+                            </div>
+
+
+                            <!-- YEAR -->
+
+                            <div class="form-group">
+
+                                <label for="year">
+                                    Year
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <select
+                                    id="year"
+                                    name="year">
+
+                                    <option value="">
+                                        Select Year
+                                    </option>
+
+                                    <option value="FY">
+                                        First Year
+                                    </option>
+
+                                    <option value="SY">
+                                        Second Year
+                                    </option>
+
+                                    <option value="TY">
+                                        Third Year
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         PHOTO
+                         ================================================= -->
+
+                    <section class="form-section">
+
+                        <div class="form-section-title">
+
+                            <span>
+                                CANDIDATE PHOTO
+                            </span>
+
+                            <h2>
+                                Upload Photo
+                            </h2>
+
+                        </div>
+
+
+                        <div class="photo-upload-box">
+
+
+                            <div class="photo-upload-icon">
+
+                                📷
+
+                            </div>
+
+
+                            <strong>
+                                Upload Candidate Photo
+                            </strong>
+
+
+                            <small>
+                                JPG, JPEG, PNG recommended
+                            </small>
+
+
+                            <input
+                                type="file"
+                                id="photo"
+                                name="photo"
+                                accept=".jpg,.jpeg,.png,image/jpeg,image/png">
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         MANIFESTO
+                         ================================================= -->
+
+                    <section class="form-section">
+
+                        <div class="form-section-title">
+
+                            <span>
+                                ELECTION INFORMATION
+                            </span>
+
+                            <h2>
+                                Manifesto
+                            </h2>
+
+                        </div>
+
+
+                        <div class="candidate-form-grid">
+
+
+                            <div class="form-group full">
+
+                                <label for="manifesto">
+                                    Candidate Manifesto
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <textarea
+                                    id="manifesto"
+                                    name="manifesto"
+                                    placeholder="Write the candidate's vision, goals and promises..."
+                                    maxlength="5000"></textarea>
+
+
+                                <div class="form-note">
+
+                                    Keep the manifesto clear and relevant
+                                    to the college election.
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         PROFILE LINK
+                         ================================================= -->
+
+                    <section class="form-section">
+
+                        <div class="form-section-title">
+
+                            <span>
+                                ONLINE PROFILE
+                            </span>
+
+                            <h2>
+                                Candidate Profile Link
+                            </h2>
+
+                        </div>
+
+
+                        <div class="candidate-form-grid">
+
+
+                            <div class="form-group full">
+
+                                <label for="profile_url">
+                                    Profile URL
+                                    <span>(Optional)</span>
+                                </label>
+
+                                <input
+                                    type="url"
+                                    id="profile_url"
+                                    name="profile_url"
+                                    placeholder="https://example.com/candidate-profile"
+                                    maxlength="500">
+
+
+                                <div class="form-note">
+
+                                    Students can use this link to view
+                                    the candidate's detailed profile.
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         FOOTER ACTIONS
+                         ================================================= -->
+
+                    <div class="form-footer">
+
+
+                        <div class="form-footer-note">
+
+                            🔐 Only authorized administrators can
+                            add candidates.
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+
+                            <a
+                                href="{{ url_for('admin.election_candidates', election_id=election.id) }}"
+                                class="form-btn">
+
+                                Cancel
+
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="form-btn primary">
+
+                                + Add Candidate
+
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                © 2026 Swami Vivekanand Mahavidyalaya, Udgir
+            </span>
+
+            <span>
+                Online Voting System
+            </span>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+</body>
+
+</html>
+

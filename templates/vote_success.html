@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Successfully Submitted</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .success-container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 45px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 55px;
+            margin: 0 auto 25px;
+        }
+
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .message {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f5f9f5;
+            border: 1px solid #dcedc8;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .exit-btn {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            padding: 13px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .exit-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="success-container">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Vote Successfully Submitted!</h1>
+
+        <p class="message">
+            Thank you for participating in the SVM Udgir Online Voting System.
+            Your vote has been successfully recorded.
+        </p>
+
+        <div class="info-box">
+            <p>
+                <strong>Your vote matters!</strong><br>
+                Your participation helps make our college election democratic,
+                transparent, and fair.
+            </p>
+        </div>
+
+        <!-- FIXED: No Flask url_for('index') required -->
+        <a href="/" class="exit-btn">Exit Voting System</a>
+
+        <div class="footer">
+            &copy; SVM Udgir Online Voting System
+        </div>
+
+    </div>
+
+</body>
+</html>

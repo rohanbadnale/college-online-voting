@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates | SVM Udgir</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        .candidate-page-header {
+            display:flex; justify-content:space-between; align-items:flex-end;
+            gap:20px; margin-bottom:30px;
+        }
+        .candidate-page-header h1 { margin:6px 0 8px; }
+        .candidate-page-header p { margin:0; color:#777; }
+
+        .candidate-header-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+        .candidate-top-btn {
+            display:inline-flex; align-items:center; justify-content:center; gap:7px;
+            padding:11px 17px; border-radius:10px; text-decoration:none;
+            font-size:13px; font-weight:700; border:1px solid #ddd;
+            background:#fff; color:#333; transition:.2s ease;
+        }
+        .candidate-top-btn:hover { background:#f7f7f7; }
+        .candidate-top-btn.primary {
+            background:#171717; color:#fff; border-color:#171717;
+        }
+        .candidate-top-btn.primary:hover { background:#000; }
+
+        .candidate-election-card {
+            background:#fff; border:1px solid #ececec; border-radius:16px;
+            padding:22px 24px; margin-bottom:28px;
+            box-shadow:0 8px 25px rgba(0,0,0,.04);
+        }
+        .candidate-election-label {
+            font-size:11px; font-weight:800; letter-spacing:1px;
+            color:#a17a25; text-transform:uppercase;
+        }
+        .candidate-election-card h2 {
+            margin:6px 0 8px; font-family:"Poppins",sans-serif; font-size:22px;
+        }
+        .candidate-election-card p { margin:0 0 16px; color:#777; font-size:14px; }
+        .candidate-election-meta { display:flex; flex-wrap:wrap; gap:10px; }
+        .candidate-meta-item {
+            padding:8px 12px; background:#f8f8f8; border-radius:8px;
+            font-size:12px; color:#555;
+        }
+
+        .candidate-position-section { margin-bottom:32px; }
+        .candidate-position-header {
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:16px;
+        }
+        .candidate-position-title { display:flex; align-items:center; gap:12px; }
+        .candidate-position-number {
+            width:38px; height:38px; border-radius:10px;
+            display:flex; align-items:center; justify-content:center;
+            background:#f5efe2; color:#8a651d; font-weight:800; font-size:14px;
+        }
+        .candidate-position-title h3 {
+            margin:0; font-family:"Poppins",sans-serif; font-size:19px;
+        }
+        .candidate-position-title span {
+            display:block; margin-top:3px; color:#888; font-size:12px;
+        }
+
+        .candidate-grid {
+            display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;
+        }
+        .candidate-card {
+            background:#fff; border:1px solid #ececec; border-radius:16px;
+            overflow:hidden; transition:.2s ease;
+            box-shadow:0 5px 18px rgba(0,0,0,.03);
+        }
+        .candidate-card:hover {
+            transform:translateY(-3px);
+            box-shadow:0 12px 30px rgba(0,0,0,.07);
+            border-color:#dfdfdf;
+        }
+
+        .candidate-photo-wrapper {
+            height:210px; background:linear-gradient(135deg,#f5f1e8,#eee9dc);
+            display:flex; align-items:center; justify-content:center;
+            overflow:hidden;
+        }
+        .candidate-photo {
+            width:100%; height:100%; object-fit:cover; display:block;
+        }
+        .candidate-photo-placeholder {
+            width:82px; height:82px; border-radius:50%; background:#fff;
+            display:flex; align-items:center; justify-content:center;
+            color:#8a651d; font-size:30px; font-weight:800;
+            box-shadow:0 5px 20px rgba(0,0,0,.08);
+        }
+
+        .candidate-card-body { padding:18px; }
+        .candidate-status {
+            display:inline-flex; align-items:center; padding:5px 9px;
+            border-radius:20px; font-size:10px; font-weight:800;
+            letter-spacing:.5px; margin-bottom:10px;
+        }
+        .candidate-status.active { background:#eaf7ee; color:#26733d; }
+        .candidate-status.inactive { background:#f5f5f5; color:#777; }
+        .candidate-card-body h4 {
+            margin:0 0 7px; font-family:"Poppins",sans-serif;
+            font-size:18px; color:#1c1c1c;
+        }
+        .candidate-details { display:grid; gap:6px; margin-bottom:14px; }
+        .candidate-detail { font-size:12px; color:#777; }
+        .candidate-detail strong { color:#444; }
+
+        .candidate-manifesto {
+            background:#fafafa; border-radius:10px; padding:11px;
+            margin-bottom:14px; color:#666; font-size:12px; line-height:1.55;
+        }
+        .candidate-manifesto strong {
+            display:block; color:#444; margin-bottom:4px;
+        }
+        .candidate-card-actions { display:flex; gap:8px; }
+        .candidate-action-btn {
+            flex:1; min-height:38px; border-radius:9px;
+            display:inline-flex; align-items:center; justify-content:center;
+            text-decoration:none; font-size:12px; font-weight:700;
+            border:1px solid #ddd; background:#fff; color:#444;
+        }
+        .candidate-action-btn:hover { background:#f7f7f7; }
+        .candidate-action-btn.profile {
+            background:#171717; color:#fff; border-color:#171717;
+        }
+        .candidate-action-btn.profile:hover { background:#000; }
+
+        .candidate-empty-position {
+            background:#fff; border:1px dashed #ddd; border-radius:14px;
+            padding:25px; text-align:center; color:#888; font-size:13px;
+        }
+        .candidate-empty-state {
+            background:#fff; border:1px solid #ececec; border-radius:18px;
+            padding:55px 25px; text-align:center;
+            box-shadow:0 5px 20px rgba(0,0,0,.03);
+        }
+        .candidate-empty-icon {
+            width:72px; height:72px; margin:0 auto 16px; border-radius:50%;
+            background:#f5efe2; color:#8a651d; display:flex;
+            align-items:center; justify-content:center; font-size:30px;
+        }
+        .candidate-empty-state h3 { margin:0 0 8px; font-family:"Poppins",sans-serif; }
+        .candidate-empty-state p { color:#888; margin:0 0 20px; }
+
+        @media(max-width:1100px) {
+            .candidate-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+        }
+        @media(max-width:750px) {
+            .candidate-page-header {
+                align-items:flex-start; flex-direction:column;
+            }
+            .candidate-grid { grid-template-columns:1fr; }
+            .candidate-election-meta { flex-direction:column; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="dashboard-page">
+
+    <aside class="dashboard-sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='images/svm-logo.png') }}" alt="SVM Udgir Logo">
+            <div>
+                <strong>SVM UDGIR</strong>
+                <span>Voting System</span>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+            <p class="menu-title">MAIN MENU</p>
+
+            <a href="{{ url_for('admin.dashboard') }}" class="menu-item">
+                <span class="menu-icon">📊</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('admin.elections') }}" class="menu-item">
+                <span class="menu-icon">🗳️</span> Elections
+            </a>
+
+            <a href="{{ url_for('admin.candidates') }}" class="menu-item active">
+                <span class="menu-icon">👤</span> Candidates
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🎓</span> Students
+            </a>
+
+            <p class="menu-title menu-space">MANAGEMENT</p>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🏆</span> Results
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔗</span> Voting Links
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span> Audit Logs
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="admin-mini">
+                <div class="admin-avatar">
+                    {{ session.get("admin_name", "A")[0]|upper }}
+                </div>
+                <div class="admin-mini-info">
+                    <strong>{{ session.get("admin_name", "Administrator") }}</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('admin.logout') }}" class="logout-btn">🚪 Logout</a>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+
+        <header class="candidate-page-header">
+            <div>
+                <span class="dashboard-label">CANDIDATE MANAGEMENT</span>
+
+                <h1>Candidates</h1>
+
+                <p>
+                    {% if election %}
+                        Manage candidates for this election.
+                    {% else %}
+                        Manage candidates across all elections.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="candidate-header-actions">
+                <a href="{{ url_for('admin.elections') }}" class="candidate-top-btn">
+                    ← Elections
+                </a>
+
+                {% if election %}
+                    <a href="{{ url_for('admin.create_candidate', election_id=election.id) }}"
+                       class="candidate-top-btn primary">
+                        + Add Candidate
+                    </a>
+                {% endif %}
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="dashboard-flashes">
+                    {% for category, message in messages %}
+                        <div class="dashboard-flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if election %}
+
+            <section class="candidate-election-card">
+                <span class="candidate-election-label">CURRENT ELECTION</span>
+
+                <h2>{{ election.title }}</h2>
+
+                <p>
+                    {% if election.description %}
+                        {{ election.description }}
+                    {% else %}
+                        No description provided.
+                    {% endif %}
+                </p>
+
+                <div class="candidate-election-meta">
+                    <span class="candidate-meta-item">
+                        Election ID: #{{ election.id }}
+                    </span>
+
+                    <span class="candidate-meta-item">
+                        Status: {{ election.status }}
+                    </span>
+
+                    <span class="candidate-meta-item">
+                        Start: {{ election.start_datetime.strftime('%d %b %Y, %I:%M %p') }}
+                    </span>
+
+                    <span class="candidate-meta-item">
+                        End: {{ election.end_datetime.strftime('%d %b %Y, %I:%M %p') }}
+                    </span>
+                </div>
+            </section>
+
+            {% if positions %}
+
+                {% for position in positions %}
+
+                    <section class="candidate-position-section">
+
+                        <div class="candidate-position-header">
+
+                            <div class="candidate-position-title">
+                                <div class="candidate-position-number">
+                                    {{ loop.index }}
+                                </div>
+
+                                <div>
+                                    <h3>{{ position.position_name }}</h3>
+                                    <span>Candidates contesting this position</span>
+                                </div>
+                            </div>
+
+                            <a href="{{ url_for('admin.create_candidate', election_id=election.id) }}"
+                               class="candidate-top-btn">
+                                + Add Candidate
+                            </a>
+
+                        </div>
+
+                        {% set position_candidates = candidates
+                            | selectattr("position_id", "equalto", position.id)
+                            | list %}
+
+                        {% if position_candidates %}
+
+                            <div class="candidate-grid">
+
+                                {% for candidate in position_candidates %}
+
+                                    <article class="candidate-card">
+
+                                        <div class="candidate-photo-wrapper">
+
+                                            {% if candidate.photo %}
+
+                                                <!-- FIXED PHOTO PATH -->
+                                                <img
+                                                    src="{{ url_for('static', filename=candidate.photo) }}"
+                                                    alt="{{ candidate.name }}"
+                                                    class="candidate-photo"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                                                <div class="candidate-photo-placeholder"
+                                                     style="display:none;">
+                                                    {{ candidate.name[0]|upper }}
+                                                </div>
+
+                                            {% else %}
+
+                                                <div class="candidate-photo-placeholder">
+                                                    {{ candidate.name[0]|upper }}
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                        <div class="candidate-card-body">
+
+                                            {% if candidate.status == "ACTIVE" %}
+                                                <span class="candidate-status active">
+                                                    ● ACTIVE
+                                                </span>
+                                            {% else %}
+                                                <span class="candidate-status inactive">
+                                                    ● INACTIVE
+                                                </span>
+                                            {% endif %}
+
+                                            <h4>{{ candidate.name }}</h4>
+
+                                            <div class="candidate-details">
+
+                                                {% if candidate.roll_number %}
+                                                    <div class="candidate-detail">
+                                                        <strong>Roll No:</strong>
+                                                        {{ candidate.roll_number }}
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if candidate.department %}
+                                                    <div class="candidate-detail">
+                                                        <strong>Department:</strong>
+                                                        {{ candidate.department }}
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if candidate.year %}
+                                                    <div class="candidate-detail">
+                                                        <strong>Year:</strong>
+                                                        {{ candidate.year }}
+                                                    </div>
+                                                {% endif %}
+
+                                            </div>
+
+                                            {% if candidate.manifesto %}
+                                                <div class="candidate-manifesto">
+                                                    <strong>Manifesto</strong>
+                                                    {{ candidate.manifesto }}
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="candidate-card-actions">
+
+                                                {% if candidate.profile_url %}
+                                                    <a href="{{ candidate.profile_url }}"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="candidate-action-btn profile">
+                                                        View Profile
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ url_for('admin.election_candidates', election_id=election.id) }}"
+                                                       class="candidate-action-btn profile">
+                                                        View Candidate
+                                                    </a>
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="candidate-empty-position">
+                                No candidates added for
+                                <strong>{{ position.position_name }}</strong>
+                                yet.
+                            </div>
+
+                        {% endif %}
+
+                    </section>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="candidate-empty-state">
+                    <div class="candidate-empty-icon">⚙</div>
+
+                    <h3>No Positions Found</h3>
+
+                    <p>
+                        Add positions to this election before adding candidates.
+                    </p>
+
+                    <a href="{{ url_for('admin.positions', election_id=election.id) }}"
+                       class="candidate-top-btn primary">
+                        ⚙ Manage Positions
+                    </a>
+                </div>
+
+            {% endif %}
+
+        {% else %}
+
+            <section class="dashboard-section">
+
+                <div class="section-heading">
+                    <div>
+                        <span>CANDIDATE MANAGEMENT</span>
+                        <h2>Select Election</h2>
+                    </div>
+                </div>
+
+                {% if elections %}
+
+                    <div class="elections-list">
+
+                        {% for item in elections %}
+
+                            <div class="election-management-card">
+
+                                <div class="election-card-main">
+
+                                    <div class="election-card-icon">🗳️</div>
+
+                                    <div class="election-card-info">
+                                        <h3>{{ item.title }}</h3>
+
+                                        <p>
+                                            {% if item.description %}
+                                                {{ item.description }}
+                                            {% else %}
+                                                No description provided.
+                                            {% endif %}
+                                        </p>
+
+                                        <div class="election-meta">
+                                            <span>ID #{{ item.id }}</span>
+                                            <span>{{ item.status }}</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="election-card-side">
+
+                                    <span class="status-badge
+                                        {% if item.status == 'ACTIVE' %}
+                                            active
+                                        {% elif item.status == 'UPCOMING' %}
+                                            upcoming
+                                        {% elif item.status == 'COMPLETED' %}
+                                            completed
+                                        {% else %}
+                                            cancelled
+                                        {% endif %}
+                                    ">
+                                        {{ item.status }}
+                                    </span>
+
+                                    <div class="election-actions">
+                                        <a href="{{ url_for('admin.election_candidates', election_id=item.id) }}"
+                                           class="action-btn candidate">
+                                            👤 Candidates
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="candidate-empty-state">
+
+                        <div class="candidate-empty-icon">🗳️</div>
+
+                        <h3>No Elections Found</h3>
+
+                        <p>Create an election first.</p>
+
+                        <a href="{{ url_for('admin.elections') }}"
+                           class="candidate-top-btn primary">
+                            + Create Election
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+
+        <div class="system-info">
+            <div class="system-info-icon">🔐</div>
+
+            <div>
+                <strong>Candidate Management</strong>
+
+                <p>
+                    Candidate information is managed by authorized
+                    administrators. Changes should be reviewed
+                    before an election becomes active.
+                </p>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <span>© 2026 Swami Vivekanand Mahavidyalaya, Udgir</span>
+            <span>Online Voting System</span>
+        </footer>
+
+    </main>
+</div>
+</body>
+</html>

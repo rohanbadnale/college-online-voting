@@ -19,7 +19,9 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header class="header">
 
@@ -43,10 +45,22 @@
         <nav class="navbar">
 
             <a href="#home" class="active">Home</a>
-            <a href="#elections">Elections</a>
-            <a href="#candidates">Candidates</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#contact">Contact</a>
+
+            <a href="#elections">
+                Elections
+            </a>
+
+            <a href="#candidates">
+                Candidates
+            </a>
+
+            <a href="#how-it-works">
+                How It Works
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
 
             <a href="/admin/login" class="admin-btn">
                 🔐 Admin Portal
@@ -59,7 +73,9 @@
 </header>
 
 
-<!-- ================= HERO ================= -->
+<!-- =====================================================
+     HERO
+===================================================== -->
 
 <section class="hero" id="home">
 
@@ -71,30 +87,44 @@
             🗳️ SVM STUDENT ELECTION 2026
         </div>
 
+
         <h2>
             YOUR VOTE.
             <span>YOUR VOICE.</span>
         </h2>
+
 
         <p>
             Welcome to the official Online Voting System of
             Swami Vivekanand Mahavidyalaya, Udgir.
         </p>
 
+
         <p class="hero-small">
             Participate in your Student Council election
             quickly, securely and transparently.
         </p>
 
+
         <div class="hero-buttons">
 
-            <a href="/vote" class="primary-btn">
+            <!-- STUDENT VOTING -->
+
+            <a href="{{ url_for('student_voting') }}"
+               class="primary-btn">
+
                 🗳️ CAST YOUR VOTE
+
                 <span>→</span>
+
             </a>
 
-            <a href="#elections" class="secondary-btn">
+
+            <a href="#elections"
+               class="secondary-btn">
+
                 VIEW ELECTIONS
+
             </a>
 
         </div>
@@ -104,7 +134,9 @@
 </section>
 
 
-<!-- ================= STATS ================= -->
+<!-- =====================================================
+     STATS
+===================================================== -->
 
 <section class="stats">
 
@@ -112,11 +144,18 @@
 
         <div class="stat-card">
 
-            <div class="stat-icon">🗳️</div>
+            <div class="stat-icon">
+                🗳️
+            </div>
 
             <div>
+
                 <strong>01</strong>
-                <span>Active Election</span>
+
+                <span>
+                    Active Election
+                </span>
+
             </div>
 
         </div>
@@ -124,11 +163,18 @@
 
         <div class="stat-card">
 
-            <div class="stat-icon">👥</div>
+            <div class="stat-icon">
+                👥
+            </div>
 
             <div>
+
                 <strong>Student</strong>
-                <span>Participation</span>
+
+                <span>
+                    Participation
+                </span>
+
             </div>
 
         </div>
@@ -136,11 +182,18 @@
 
         <div class="stat-card">
 
-            <div class="stat-icon">🔒</div>
+            <div class="stat-icon">
+                🔒
+            </div>
 
             <div>
+
                 <strong>Secure</strong>
-                <span>Voting System</span>
+
+                <span>
+                    Voting System
+                </span>
+
             </div>
 
         </div>
@@ -148,11 +201,18 @@
 
         <div class="stat-card">
 
-            <div class="stat-icon">⚡</div>
+            <div class="stat-icon">
+                ⚡
+            </div>
 
             <div>
+
                 <strong>Fast</strong>
-                <span>Online Voting</span>
+
+                <span>
+                    Online Voting
+                </span>
+
             </div>
 
         </div>
@@ -162,15 +222,22 @@
 </section>
 
 
-<!-- ================= ELECTION ================= -->
+<!-- =====================================================
+     ELECTION
+===================================================== -->
 
-<section class="section" id="elections">
+<section class="section"
+         id="elections">
 
     <div class="section-heading">
 
-        <span>ONLINE ELECTION</span>
+        <span>
+            ONLINE ELECTION
+        </span>
 
-        <h2>Current Election</h2>
+        <h2>
+            Current Election
+        </h2>
 
         <p>
             Choose your preferred candidate and make
@@ -185,12 +252,18 @@
         <div class="election-left">
 
             <div class="live-badge">
-                <span></span> ELECTION ACTIVE
+
+                <span></span>
+
+                ELECTION ACTIVE
+
             </div>
+
 
             <h3>
                 Student Council Election 2026
             </h3>
+
 
             <p>
                 Elect your representatives for the
@@ -202,18 +275,41 @@
             <div class="positions">
 
                 <div>
-                    <b>01</b>
-                    <span>President</span>
+
+                    <b>
+                        01
+                    </b>
+
+                    <span>
+                        President
+                    </span>
+
                 </div>
 
-                <div>
-                    <b>02</b>
-                    <span>Vice President</span>
-                </div>
 
                 <div>
-                    <b>03</b>
-                    <span>Secretary</span>
+
+                    <b>
+                        02
+                    </b>
+
+                    <span>
+                        Vice President
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <b>
+                        03
+                    </b>
+
+                    <span>
+                        Secretary
+                    </span>
+
                 </div>
 
             </div>
@@ -227,8 +323,14 @@
                 🗳️
             </div>
 
-            <a href="/vote" class="vote-btn">
+
+            <!-- STUDENT VOTING -->
+
+            <a href="{{ url_for('student_voting') }}"
+               class="vote-btn">
+
                 VOTE NOW →
+
             </a>
 
         </div>
@@ -238,15 +340,21 @@
 </section>
 
 
-<!-- ================= WHY ================= -->
+<!-- =====================================================
+     WHY ONLINE VOTING
+===================================================== -->
 
 <section class="why-section">
 
     <div class="section-heading light">
 
-        <span>WHY ONLINE VOTING?</span>
+        <span>
+            WHY ONLINE VOTING?
+        </span>
 
-        <h2>Simple. Fast. Transparent.</h2>
+        <h2>
+            Simple. Fast. Transparent.
+        </h2>
 
         <p>
             A modern voting experience designed
@@ -264,7 +372,9 @@
                 ⚡
             </div>
 
-            <h3>Fast</h3>
+            <h3>
+                Fast
+            </h3>
 
             <p>
                 Cast your vote within minutes
@@ -280,7 +390,9 @@
                 🔒
             </div>
 
-            <h3>Secure</h3>
+            <h3>
+                Secure
+            </h3>
 
             <p>
                 Server-side validation helps
@@ -296,7 +408,9 @@
                 🎯
             </div>
 
-            <h3>Accurate</h3>
+            <h3>
+                Accurate
+            </h3>
 
             <p>
                 Every valid vote is recorded
@@ -312,7 +426,9 @@
                 📊
             </div>
 
-            <h3>Transparent</h3>
+            <h3>
+                Transparent
+            </h3>
 
             <p>
                 Election turnout and results
@@ -326,15 +442,22 @@
 </section>
 
 
-<!-- ================= HOW IT WORKS ================= -->
+<!-- =====================================================
+     HOW IT WORKS
+===================================================== -->
 
-<section class="section" id="how-it-works">
+<section class="section"
+         id="how-it-works">
 
     <div class="section-heading">
 
-        <span>VOTING PROCESS</span>
+        <span>
+            VOTING PROCESS
+        </span>
 
-        <h2>How It Works</h2>
+        <h2>
+            How It Works
+        </h2>
 
         <p>
             Follow these simple steps to participate.
@@ -351,7 +474,9 @@
                 01
             </div>
 
-            <h3>Open Voting Link</h3>
+            <h3>
+                Open Voting Link
+            </h3>
 
             <p>
                 Open the official election voting
@@ -367,7 +492,9 @@
                 02
             </div>
 
-            <h3>Choose Candidate</h3>
+            <h3>
+                Choose Candidate
+            </h3>
 
             <p>
                 Review candidate information
@@ -383,7 +510,9 @@
                 03
             </div>
 
-            <h3>Submit Vote</h3>
+            <h3>
+                Submit Vote
+            </h3>
 
             <p>
                 Confirm your selection and
@@ -399,7 +528,9 @@
                 04
             </div>
 
-            <h3>Vote Recorded</h3>
+            <h3>
+                Vote Recorded
+            </h3>
 
             <p>
                 Your vote is recorded successfully
@@ -413,15 +544,22 @@
 </section>
 
 
-<!-- ================= CANDIDATES ================= -->
+<!-- =====================================================
+     CANDIDATES
+===================================================== -->
 
-<section class="candidate-section" id="candidates">
+<section class="candidate-section"
+         id="candidates">
 
     <div class="section-heading light">
 
-        <span>STUDENT COUNCIL</span>
+        <span>
+            STUDENT COUNCIL
+        </span>
 
-        <h2>Meet The Candidates</h2>
+        <h2>
+            Meet The Candidates
+        </h2>
 
         <p>
             Know your candidates before you vote.
@@ -436,14 +574,21 @@
             👤
         </div>
 
-        <h3>Candidate Profiles</h3>
+
+        <h3>
+            Candidate Profiles
+        </h3>
+
 
         <p>
             Candidate profiles, manifestos and
             election positions will appear here.
         </p>
 
-        <a href="/vote">
+
+        <!-- STUDENT VOTING -->
+
+        <a href="{{ url_for('student_voting') }}">
             VIEW CANDIDATES →
         </a>
 
@@ -452,7 +597,9 @@
 </section>
 
 
-<!-- ================= NOTICE ================= -->
+<!-- =====================================================
+     NOTICE
+===================================================== -->
 
 <section class="notice-section">
 
@@ -462,9 +609,12 @@
             📢
         </div>
 
+
         <div>
 
-            <span>IMPORTANT NOTICE</span>
+            <span>
+                IMPORTANT NOTICE
+            </span>
 
             <h3>
                 Vote responsibly. Choose wisely.
@@ -482,7 +632,9 @@
 </section>
 
 
-<!-- ================= COLLEGE ================= -->
+<!-- =====================================================
+     COLLEGE
+===================================================== -->
 
 <section class="college-section">
 
@@ -498,12 +650,16 @@
 
         <div>
 
-            <span>ABOUT THE INSTITUTION</span>
+            <span>
+                ABOUT THE INSTITUTION
+            </span>
+
 
             <h2>
                 Swami Vivekanand
                 Mahavidyalaya, Udgir
             </h2>
+
 
             <p>
                 Swami Vivekanand Mahavidyalaya, Udgir
@@ -512,10 +668,14 @@
                 socially conscious students.
             </p>
 
+
             <a href="https://svmudgir.org/"
                target="_blank"
+               rel="noopener noreferrer"
                class="college-btn">
+
                 VISIT OFFICIAL WEBSITE →
+
             </a>
 
         </div>
@@ -525,15 +685,22 @@
 </section>
 
 
-<!-- ================= CONTACT ================= -->
+<!-- =====================================================
+     CONTACT
+===================================================== -->
 
-<section class="contact" id="contact">
+<section class="contact"
+         id="contact">
 
     <div class="section-heading">
 
-        <span>GET IN TOUCH</span>
+        <span>
+            GET IN TOUCH
+        </span>
 
-        <h2>College Information</h2>
+        <h2>
+            College Information
+        </h2>
 
     </div>
 
@@ -542,9 +709,13 @@
 
         <div class="contact-card">
 
-            <div>📍</div>
+            <div>
+                📍
+            </div>
 
-            <h3>Campus</h3>
+            <h3>
+                Campus
+            </h3>
 
             <p>
                 Swami Vivekanand Campus,<br>
@@ -557,9 +728,13 @@
 
         <div class="contact-card">
 
-            <div>🌐</div>
+            <div>
+                🌐
+            </div>
 
-            <h3>Website</h3>
+            <h3>
+                Website
+            </h3>
 
             <p>
                 svmudgir.org
@@ -570,9 +745,13 @@
 
         <div class="contact-card">
 
-            <div>🗳️</div>
+            <div>
+                🗳️
+            </div>
 
-            <h3>Election Portal</h3>
+            <h3>
+                Election Portal
+            </h3>
 
             <p>
                 Online Student Voting System
@@ -585,7 +764,9 @@
 </section>
 
 
-<!-- ================= FOOTER ================= -->
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer>
 
@@ -595,6 +776,7 @@
 
             <img src="{{ url_for('static', filename='images/svm-logo.png') }}"
                  alt="SVM Logo">
+
 
             <div>
 
@@ -613,11 +795,25 @@
 
         <div class="footer-links">
 
-            <a href="#home">Home</a>
-            <a href="#elections">Elections</a>
-            <a href="#candidates">Candidates</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="/admin/login">Admin</a>
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#elections">
+                Elections
+            </a>
+
+            <a href="#candidates">
+                Candidates
+            </a>
+
+            <a href="#how-it-works">
+                How It Works
+            </a>
+
+            <a href="/admin/login">
+                Admin
+            </a>
 
         </div>
 
@@ -639,7 +835,12 @@
 </footer>
 
 
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
+
 </html>
