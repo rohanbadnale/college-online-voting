@@ -6,19 +6,19 @@ load_dotenv()
 
 class Config:
 
-    SECRET_KEY = os.getenv(
-        "SECRET_KEY",
-        "change-this-secret-key"
-    )
+    SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret-key")
 
     ADMIN_REGISTRATION_KEY = os.getenv(
-        "ADMIN_REGISTRATION_KEY",
-        ""
+        "ADMIN_REGISTRATION_KEY", ""
     )
 
     DB_CONFIG = {
         "host": os.getenv("DB_HOST", "localhost"),
+        "port": int(os.getenv("DB_PORT", "3306")),
         "user": os.getenv("DB_USER", "root"),
         "password": os.getenv("DB_PASSWORD", ""),
         "database": os.getenv("DB_NAME", "college_voting"),
+        "ssl_disabled": False,
+        "ssl_verify_cert": True,
+        "ssl_verify_identity": True,
     }
