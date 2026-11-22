@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Student</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <style>
+        body {
+            background: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media(max-width: 600px) {
+            .form-container {
+                padding: 12px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <div class="form-card">
+
+        <h1>🎓 Add New Student</h1>
+
+        <p class="subtitle">
+            Enter student details to register a new student.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('student.add_student') }}">
+
+            <!-- Student Name -->
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name <span class="required">*</span>
+                </label>
+
+                <input type="text"
+                       id="name"
+                       name="name"
+                       placeholder="Enter student full name"
+                       required>
+            </div>
+
+
+            <!-- Roll Number -->
+            <div class="form-group">
+
+                <label for="roll_number">
+                    Roll Number <span class="required">*</span>
+                </label>
+
+                <input type="text"
+                       id="roll_number"
+                       name="roll_number"
+                       placeholder="Enter roll number"
+                       required>
+            </div>
+
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address <span class="required">*</span>
+                </label>
+
+                <input type="email"
+                       id="email"
+                       name="email"
+                       placeholder="student@example.com"
+                       required>
+            </div>
+
+
+            <!-- Department -->
+            <div class="form-group">
+
+                <label for="department">
+                    Department
+                </label>
+
+                <select id="department" name="department">
+
+                    <option value="">Select Department</option>
+
+                    <option value="BCA">BCA</option>
+                    <option value="BBA">BBA</option>
+                    <option value="BCS">BCS</option>
+                    <option value="B.Com">B.Com</option>
+                    <option value="BA">BA</option>
+                    <option value="B.Sc">B.Sc</option>
+                    <option value="B.Tech">B.Tech</option>
+                    <option value="Other">Other</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Academic Year -->
+            <div class="form-group">
+
+                <label for="year">
+                    Academic Year
+                </label>
+
+                <select id="year" name="year">
+
+                    <option value="">Select Year</option>
+
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Buttons -->
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+                    💾 Save Student
+                </button>
+
+                <a href="{{ url_for('student.student_list') }}"
+                   class="cancel-btn">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

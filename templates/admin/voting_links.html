@@ -2,350 +2,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voting Links | Admin Panel</title>
 
-    <title>Voting Links | SVM Udgir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fb;
+    color: #172033;
+}
 
-    <style>
-        body {
-            font-family: Inter, Arial, sans-serif;
-        }
+.main {
+    max-width: 1450px;
+    margin: auto;
+    padding: 35px;
+}
 
-        .links-container {
-            padding: 35px;
-        }
+/* Header */
 
-        .links-header {
-            margin-bottom: 25px;
-        }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
 
-        .links-header h1 {
-            margin-bottom: 8px;
-        }
+.header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
 
-        .links-header p {
-            color: #777;
-        }
+.header p {
+    color: #7c8799;
+    font-size: 14px;
+}
 
-        .election-link-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
+.back-btn {
+    text-decoration: none;
+    padding: 11px 18px;
+    background: white;
+    border: 1px solid #e5eaf1;
+    border-radius: 10px;
+    color: #344054;
+    font-weight: 600;
+}
 
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+/* Stats */
 
-        .card-top h2 {
-            margin: 0 0 8px;
-            font-size: 21px;
-        }
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
 
-        .election-id {
-            color: #888;
-            font-size: 13px;
-        }
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #edf0f5;
+    box-shadow: 0 4px 15px rgba(20,40,80,0.03);
+}
 
-        .status {
-            padding: 7px 13px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-        }
+.stat-card .label {
+    font-size: 13px;
+    color: #8792a5;
+    margin-bottom: 12px;
+}
 
-        .ACTIVE {
-            background: #dcfce7;
-            color: #166534;
-        }
+.stat-card h2 {
+    font-size: 30px;
+    font-weight: 800;
+}
 
-        .UPCOMING {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
+.stat-icon {
+    font-size: 23px;
+    margin-bottom: 12px;
+}
 
-        .COMPLETED {
-            background: #f1f5f9;
-            color: #475569;
-        }
+/* Main table */
 
-        .CANCELLED {
-            background: #fee2e2;
-            color: #991b1b;
-        }
+.panel {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid #edf0f5;
+    box-shadow: 0 5px 20px rgba(20,40,80,0.04);
+    overflow: hidden;
+}
 
-        .link-box {
-            display: flex;
-            gap: 10px;
-            margin-top: 22px;
-            flex-wrap: wrap;
-        }
+.panel-header {
+    padding: 24px;
+    border-bottom: 1px solid #edf0f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
 
-        .link-box input {
-            flex: 1;
-            min-width: 220px;
-            padding: 13px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f8fafc;
-        }
+.panel-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
 
-        .btn {
-            padding: 12px 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+.panel-header p {
+    color: #8a94a6;
+    font-size: 13px;
+    margin-top: 5px;
+}
 
-        .copy-btn {
-            background: #2563eb;
-            color: white;
-        }
+.search {
+    padding: 11px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    outline: none;
+    width: 260px;
+    font-family: inherit;
+}
 
-        .open-btn {
-            background: #16a34a;
-            color: white;
-        }
+.search:focus {
+    border-color: #6366f1;
+}
 
-        .qr-btn {
-            background: #111827;
-            color: white;
-        }
+.table-wrap {
+    overflow-x: auto;
+}
 
-        .qr-container {
-            margin-top: 20px;
-            display: none;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            text-align: center;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
 
-        .qr-container img {
-            width: 220px;
-            height: 220px;
-            max-width: 100%;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-        }
+thead {
+    background: #f8fafc;
+}
 
-        .message {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #16a34a;
-        }
+th {
+    padding: 15px 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #8a94a6;
+    text-align: left;
+}
 
-        .empty-state {
-            background: white;
-            border-radius: 15px;
-            padding: 50px 20px;
-            text-align: center;
-        }
+td {
+    padding: 20px;
+    border-bottom: 1px solid #f0f2f6;
+    vertical-align: middle;
+}
 
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #2563eb;
-        }
+tr:hover {
+    background: #fafbff;
+}
 
-        @media(max-width: 600px) {
-            .links-container {
-                padding: 18px;
-            }
+.election-name {
+    font-weight: 700;
+    font-size: 14px;
+}
 
-            .link-box {
-                flex-direction: column;
-            }
+.election-id {
+    color: #9aa3b2;
+    font-size: 12px;
+    margin-top: 6px;
+}
 
-            .link-box input {
-                width: 100%;
-                box-sizing: border-box;
-            }
+.status {
+    padding: 7px 11px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+}
 
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+.status.active {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.status.other {
+    color: #64748b;
+    background: #eef2f7;
+}
+
+.link-input {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e8edf4;
+    border-radius: 9px;
+    overflow: hidden;
+    max-width: 420px;
+}
+
+.link-input input {
+    width: 310px;
+    border: none;
+    outline: none;
+    padding: 11px;
+    background: transparent;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.copy-btn {
+    border: none;
+    padding: 10px 13px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.copy-btn:hover {
+    background: #e0e7ff;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.open-btn {
+    text-decoration: none;
+    color: white;
+    background: #4f46e5;
+    padding: 10px 14px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.open-btn:hover {
+    background: #4338ca;
+}
+
+.empty {
+    padding: 50px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+/* Responsive */
+
+@media(max-width: 768px) {
+    .main {
+        padding: 18px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 23px;
+    }
+
+    .search {
+        width: 100%;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="links-container">
+<div class="main">
 
-    <div class="links-header">
-        <h1>🔗 Voting Links</h1>
-        <p>Generate and share voting links for your college elections.</p>
+    <div class="header">
+        <div>
+            <h1>🔗 Voting Links</h1>
+            <p>Manage, copy and share election voting links.</p>
+        </div>
+
+        <a href="{{ url_for('admin.dashboard') }}" class="back-btn">
+            ← Dashboard
+        </a>
     </div>
 
-    {% if elections %}
+    <!-- Statistics -->
 
-        {% for election in elections %}
+    <div class="stats">
 
-        <div class="election-link-card">
-
-            <div class="card-top">
-
-                <div>
-                    <h2>{{ election.title }}</h2>
-                    <span class="election-id">
-                        Election ID: {{ election.id }}
-                    </span>
-                </div>
-
-                <span class="status {{ election.status }}">
-                    {{ election.status }}
-                </span>
-
-            </div>
-
-            <div class="link-box">
-
-                <input
-                    type="text"
-                    id="link-{{ election.id }}"
-                    value="{{ election.voting_url }}"
-                    readonly
-                >
-
-                <button class="btn copy-btn"
-                        onclick="copyLink({{ election.id }})">
-                    📋 Copy
-                </button>
-
-                <a class="btn open-btn"
-                   href="{{ election.voting_url }}"
-                   target="_blank">
-                    ↗ Open
-                </a>
-
-                <button class="btn qr-btn"
-                        onclick="showQR({{ election.id }})">
-                    ▦ QR Code
-                </button>
-
-            </div>
-
-            <div id="message-{{ election.id }}"
-                 class="message"></div>
-
-            <div id="qr-{{ election.id }}"
-                 class="qr-container">
-
-                <h3>Scan to Vote</h3>
-
-                <img
-                    id="qr-image-{{ election.id }}"
-                    alt="Election QR Code"
-                >
-
-                <p>Scan this QR code to open the voting page.</p>
-
-                <button class="btn copy-btn"
-                        onclick="downloadQR({{ election.id }})">
-                    Download QR
-                </button>
-
-            </div>
-
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="label">Total Elections</div>
+            <h2>{{ elections|length }}</h2>
         </div>
 
-        {% endfor %}
-
-    {% else %}
-
-        <div class="empty-state">
-
-            <h2>No Elections Found</h2>
-
-            <p>Create an election first to generate its voting link.</p>
-
-            <a href="{{ url_for('admin.elections') }}"
-               class="btn copy-btn">
-                Create Election
-            </a>
-
+        <div class="stat-card">
+            <div class="stat-icon">🟢</div>
+            <div class="label">Active Elections</div>
+            <h2>
+                {{ elections|selectattr('status', 'equalto', 'ACTIVE')|list|length }}
+            </h2>
         </div>
 
-    {% endif %}
+        <div class="stat-card">
+            <div class="stat-icon">🔗</div>
+            <div class="label">Voting Links Generated</div>
+            <h2>{{ elections|length }}</h2>
+        </div>
 
-    <a href="{{ url_for('admin.dashboard') }}"
-       class="back-link">
-        ← Back to Dashboard
-    </a>
+    </div>
+
+    <!-- Table -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <div>
+                <h2>Election Links</h2>
+                <p>Share these links with eligible students.</p>
+            </div>
+
+            <input
+                type="text"
+                class="search"
+                id="searchInput"
+                placeholder="🔍 Search election..."
+                onkeyup="searchElections()"
+            >
+        </div>
+
+        <div class="table-wrap">
+
+            <table id="electionTable">
+
+                <thead>
+                    <tr>
+                        <th>Election</th>
+                        <th>Status</th>
+                        <th>Voting URL</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for election in elections %}
+
+                    <tr>
+
+                        <td>
+                            <div class="election-name">
+                                {{ election.title }}
+                            </div>
+
+                            <div class="election-id">
+                                Election ID: #{{ election.id }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {% if election.status == 'ACTIVE' %}
+                                <span class="status active">● ACTIVE</span>
+                            {% else %}
+                                <span class="status other">
+                                    {{ election.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="link-input">
+
+                                <input
+                                    type="text"
+                                    id="link-{{ election.id }}"
+                                    value="{{ election.voting_url }}"
+                                    readonly
+                                >
+
+                                <button
+                                    class="copy-btn"
+                                    onclick="copyLink({{ election.id }}, this)"
+                                >
+                                    📋 Copy
+                                </button>
+
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+                                <a
+                                    href="{{ election.voting_url }}"
+                                    target="_blank"
+                                    class="open-btn"
+                                >
+                                    ↗ Open
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="4" class="empty">
+                            <h3>No Elections Found</h3>
+                            <p>Create an election to generate voting links.</p>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
 
 </div>
 
 <script>
 
-function copyLink(id) {
+function copyLink(id, button) {
 
     const input = document.getElementById("link-" + id);
-    const message = document.getElementById("message-" + id);
 
     navigator.clipboard.writeText(input.value)
-        .then(() => {
-            message.innerText = "Voting link copied successfully!";
-        })
-        .catch(() => {
-            input.select();
-            document.execCommand("copy");
-            message.innerText = "Voting link copied!";
-        });
+    .then(() => {
+
+        button.innerHTML = "✅ Copied!";
+        
+        setTimeout(() => {
+            button.innerHTML = "📋 Copy";
+        }, 2000);
+
+    })
+    .catch(() => {
+
+        input.select();
+        document.execCommand("copy");
+
+        button.innerHTML = "✅ Copied!";
+
+        setTimeout(() => {
+            button.innerHTML = "📋 Copy";
+        }, 2000);
+
+    });
 }
 
-function showQR(id) {
+function searchElections() {
 
-    const input = document.getElementById("link-" + id);
-    const container = document.getElementById("qr-" + id);
-    const image = document.getElementById("qr-image-" + id);
+    const search = document.getElementById("searchInput")
+        .value.toLowerCase();
 
-    const qrURL =
-        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="
-        + encodeURIComponent(input.value);
+    const rows = document.querySelectorAll("#electionTable tbody tr");
 
-    image.src = qrURL;
+    rows.forEach(row => {
 
-    container.style.display = "block";
-}
+        const text = row.innerText.toLowerCase();
 
-function downloadQR(id) {
+        row.style.display = text.includes(search) ? "" : "none";
 
-    const image = document.getElementById("qr-image-" + id);
+    });
 
-    if (!image.src) {
-        alert("Please generate the QR code first.");
-        return;
-    }
-
-    const link = document.createElement("a");
-
-    link.href = image.src;
-    link.download = "election-QR-" + id + ".png";
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 </script>

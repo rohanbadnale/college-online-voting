@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <style>
+        body {
+            background: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .students-container {
+            max-width: 1250px;
+            margin: 30px auto;
+            padding: 25px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .page-header p {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #334155;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .add-btn {
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .stats-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            max-width: 250px;
+        }
+
+        .stats-card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0 0 10px;
+        }
+
+        .stats-card h2 {
+            font-size: 32px;
+            color: #2563eb;
+            margin: 0;
+        }
+
+        .table-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-form input {
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            width: 250px;
+        }
+
+        .search-form button {
+            padding: 10px 16px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background: #1d4ed8;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        td {
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .delete-btn:hover {
+            background: #b02a37;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .students-container {
+                padding: 12px;
+            }
+
+            .search-form input {
+                width: 180px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="students-container">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h1>🎓 Student Management</h1>
+            <p>Manage college students and their records.</p>
+        </div>
+
+        <div class="header-buttons">
+
+            <a href="{{ url_for('student.add_student') }}"
+               class="add-btn">
+                ➕ Add Student
+            </a>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="back-btn">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL STUDENTS -->
+
+    <div class="stats-card">
+
+        <h3>Total Students</h3>
+
+        <h2>{{ students|length }}</h2>
+
+    </div>
+
+
+    <!-- STUDENT TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h2>Students List</h2>
+
+            <form method="GET"
+                  action="{{ url_for('student.student_list') }}"
+                  class="search-form">
+
+                <input type="text"
+                       name="search"
+                       placeholder="Search name, roll no, email..."
+                       value="{{ search }}">
+
+                <button type="submit">Search</button>
+
+            </form>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Roll Number</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+
+                        <td>{{ student.id }}</td>
+
+                        <td>{{ student.name }}</td>
+
+                        <td>{{ student.roll_number }}</td>
+
+                        <td>{{ student.email }}</td>
+
+                        <td>{{ student.department or '-' }}</td>
+
+                        <td>{{ student.year or '-' }}</td>
+
+                        <td>
+
+                            {% if student.status == 'ACTIVE' %}
+
+                                <span class="status active">
+                                    ACTIVE
+                                </span>
+
+                            {% else %}
+
+                                <span class="status inactive">
+                                    INACTIVE
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- DELETE ACTION -->
+
+                        <td>
+
+                            <form action="{{ url_for('student.delete_student', student_id=student.id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete {{ student.name }}? This action cannot be undone.');">
+
+                                <button type="submit"
+                                        class="delete-btn">
+                                    🗑️ Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="8" class="empty-state">
+
+                            {% if search %}
+                                No students found matching "{{ search }}".
+                            {% else %}
+                                No students registered yet. Click Add Student to register a new student.
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

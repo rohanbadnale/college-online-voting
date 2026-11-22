@@ -1,0 +1,734 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs | SVM Udgir</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================
+           AUDIT LOGS PAGE
+        ========================= */
+
+        .audit-container {
+            padding: 30px;
+            color: #1e293b;
+        }
+
+        .audit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .audit-header h1 {
+            color: #1e293b !important;
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .audit-header p {
+            color: #64748b !important;
+            margin: 0;
+        }
+
+        .audit-back-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #1e40af;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .audit-back-btn:hover {
+            background: #1e3a8a;
+        }
+
+        /* STATISTICS */
+
+        .audit-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .audit-stat-card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            border: 1px solid #edf0f5;
+        }
+
+        .audit-stat-card span {
+            display: block;
+            color: #64748b !important;
+            font-size: 14px;
+        }
+
+        .audit-stat-card h2 {
+            color: #1e293b !important;
+            font-size: 30px;
+            margin: 12px 0 0;
+            font-weight: 800;
+        }
+
+        /* TABLE CARD */
+
+        .audit-card {
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            border: 1px solid #edf0f5;
+            overflow: hidden;
+        }
+
+        .audit-card-header {
+            padding: 22px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .audit-card-header h3 {
+            color: #1e293b !important;
+            margin: 8px 0 0;
+        }
+
+        /* FILTERS */
+
+        .audit-filters {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .audit-filters input,
+        .audit-filters select {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #dbe1e8;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .audit-filters input:focus,
+        .audit-filters select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .audit-clear-btn {
+            padding: 11px 18px;
+            border: none;
+            background: #64748b;
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .audit-clear-btn:hover {
+            background: #475569;
+        }
+
+        /* TABLE */
+
+        .audit-table-wrapper {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+            background: #ffffff;
+        }
+
+        .audit-table thead th {
+            background: #f8fafc;
+            color: #475569 !important;
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .audit-table tbody td {
+            color: #334155 !important;
+            background: #ffffff;
+            padding: 16px;
+            border-bottom: 1px solid #edf0f5;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .audit-table tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+        .audit-table td strong {
+            color: #1e293b !important;
+        }
+
+        .audit-table td small {
+            color: #64748b !important;
+        }
+
+        /* ACTION BADGES */
+
+        .audit-badge {
+            display: inline-block;
+            padding: 6px 11px;
+            background: #e0e7ff;
+            color: #3730a3 !important;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* EMPTY STATE */
+
+        .audit-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b !important;
+        }
+
+        .audit-empty h3 {
+            color: #334155 !important;
+        }
+
+        .audit-empty-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        /* FOOTER */
+
+        .audit-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            color: #64748b !important;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .audit-footer span {
+            color: #64748b !important;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .audit-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .audit-filters {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .audit-container {
+                padding: 15px;
+            }
+
+            .audit-header {
+                align-items: flex-start;
+            }
+
+            .audit-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .audit-stat-card {
+                padding: 16px;
+            }
+
+            .audit-stat-card h2 {
+                font-size: 24px;
+            }
+
+            .audit-filters {
+                grid-template-columns: 1fr;
+            }
+
+            .audit-back-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-page">
+
+    <!-- SIDEBAR -->
+    <aside class="dashboard-sidebar">
+
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='images/svm-logo.png') }}"
+                 alt="SVM Udgir Logo">
+
+            <div>
+                <strong>SVM UDGIR</strong>
+                <span>Voting System</span>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+
+            <p class="menu-title">MAIN MENU</p>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('admin.elections') }}"
+               class="menu-item">
+                <span class="menu-icon">🗳️</span>
+                <span>Elections</span>
+            </a>
+
+            <a href="{{ url_for('admin.candidates') }}"
+               class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span>Candidates</span>
+            </a>
+
+            <a href="{{ url_for('admin.dashboard') }}"
+               class="menu-item">
+                <span class="menu-icon">🎓</span>
+                <span>Students</span>
+            </a>
+
+            <p class="menu-title menu-space">MANAGEMENT</p>
+
+            <a href="{{ url_for('admin.results') }}"
+               class="menu-item">
+                <span class="menu-icon">🏆</span>
+                <span>Results</span>
+            </a>
+
+            <!-- VOTING LINKS PLACEHOLDER -->
+            <a href="#"
+               class="menu-item"
+               onclick="alert('Voting Links feature coming soon!'); return false;">
+                <span class="menu-icon">🔗</span>
+                <span>Voting Links</span>
+            </a>
+
+            <a href="{{ url_for('admin.audit_logs') }}"
+               class="menu-item active">
+                <span class="menu-icon">📋</span>
+                <span>Audit Logs</span>
+            </a>
+
+        </nav>
+
+        <!-- SIDEBAR BOTTOM -->
+        <div class="sidebar-bottom">
+
+            <div class="admin-mini">
+
+                <div class="admin-avatar">
+                    {{ admin_name[0]|upper if admin_name else 'A' }}
+                </div>
+
+                <div class="admin-mini-info">
+                    <strong>{{ admin_name or 'Admin' }}</strong>
+                    <span>Administrator</span>
+                </div>
+
+            </div>
+
+            <a href="{{ url_for('admin.logout') }}"
+               class="logout-btn">
+                <span>🚪</span>
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard-main">
+
+        <!-- HEADER -->
+        <header class="dashboard-header">
+
+            <div>
+                <span class="dashboard-label">ADMINISTRATION</span>
+                <h1>Audit Logs</h1>
+                <p>Track and monitor administrative activities.</p>
+            </div>
+
+            <div class="header-admin">
+
+                <div class="header-avatar">
+                    {{ admin_name[0]|upper if admin_name else 'A' }}
+                </div>
+
+                <div>
+                    <strong>{{ admin_name }}</strong>
+                    <span>{{ admin_email }}</span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="dashboard-flashes">
+                    {% for category, message in messages %}
+                        <div class="dashboard-flash {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- AUDIT CONTENT -->
+        <div class="audit-container">
+
+            <!-- PAGE TITLE -->
+            <div class="audit-header">
+
+                <div>
+                    <h1>📋 Activity Logs</h1>
+                    <p>Monitor all recorded administrative activities.</p>
+                </div>
+
+                <a href="{{ url_for('admin.dashboard') }}"
+                   class="audit-back-btn">
+                    ← Back to Dashboard
+                </a>
+
+            </div>
+
+            <!-- STATISTICS -->
+            <div class="audit-stats">
+
+                <div class="audit-stat-card">
+                    <span>Total Activities</span>
+                    <h2 id="totalCount">{{ logs|length }}</h2>
+                </div>
+
+                <div class="audit-stat-card">
+                    <span>Login Activities</span>
+                    <h2 id="loginCount">0</h2>
+                </div>
+
+                <div class="audit-stat-card">
+                    <span>Other Activities</span>
+                    <h2 id="otherCount">0</h2>
+                </div>
+
+                <div class="audit-stat-card">
+                    <span>Records Loaded</span>
+                    <h2>{{ logs|length }}</h2>
+                </div>
+
+            </div>
+
+            <!-- TABLE CARD -->
+            <div class="audit-card">
+
+                <div class="audit-card-header">
+
+                    <!-- FILTERS -->
+                    <div class="audit-filters">
+
+                        <input type="text"
+                               id="searchLogs"
+                               placeholder="Search activities...">
+
+                        <select id="actionFilter">
+
+                            <option value="">All Actions</option>
+                            <option value="login">Login</option>
+                            <option value="logout">Logout</option>
+                            <option value="election">Election</option>
+                            <option value="candidate">Candidate</option>
+                            <option value="vote">Vote</option>
+                            <option value="delete">Delete</option>
+
+                        </select>
+
+                        <input type="date" id="dateFilter">
+
+                        <button type="button"
+                                class="audit-clear-btn"
+                                onclick="clearFilters()">
+                            Clear
+                        </button>
+
+                    </div>
+
+                    <h3>Activity History</h3>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="audit-table-wrapper">
+
+                    <table class="audit-table" id="logsTable">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Admin</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                                <th>Date &amp; Time</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="logsTableBody">
+
+                            {% if logs %}
+
+                                {% for log in logs %}
+
+                                <tr class="log-row">
+
+                                    <td>{{ log.id }}</td>
+
+                                    <td>
+                                        <strong>
+                                            {{ log.admin_name or 'Unknown Admin' }}
+                                        </strong>
+                                        <br>
+                                        <small>
+                                            Admin ID: {{ log.admin_id or 'N/A' }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <span class="audit-badge">
+                                            {{ log.action or 'Unknown' }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        {{ log.description or 'No description' }}
+                                    </td>
+
+                                    <td>
+                                        {{ log.ip_address or 'N/A' }}
+                                    </td>
+
+                                    <td>
+                                        {% if log.created_at %}
+                                            {{ log.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="6">
+
+                                        <div class="audit-empty">
+                                            <div class="audit-empty-icon">📭</div>
+                                            <h3>No Audit Logs Found</h3>
+                                            <p>Administrative activities will appear here.</p>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                            {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="audit-footer">
+
+                    <span id="paginationInfo">
+                        Showing {{ logs|length }} records
+                    </span>
+
+                    <button type="button"
+                            class="audit-clear-btn"
+                            onclick="window.location.reload()">
+                        🔄 Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PAGE FOOTER -->
+        <footer class="dashboard-footer">
+
+            <span>© 2026 Swami Vivekanand Mahavidyalaya, Udgir</span>
+            <span>Online Voting System</span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- SEARCH AND FILTER SCRIPT -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("searchLogs");
+    const actionFilter = document.getElementById("actionFilter");
+    const dateFilter = document.getElementById("dateFilter");
+    const rows = document.querySelectorAll(".log-row");
+    const paginationInfo = document.getElementById("paginationInfo");
+
+    let loginCount = 0;
+    let otherCount = 0;
+
+    // Calculate activity statistics
+    rows.forEach(function(row) {
+
+        const action = row.cells[2].innerText.toLowerCase();
+
+        if (action.includes("login")) {
+            loginCount++;
+        } else {
+            otherCount++;
+        }
+
+    });
+
+    document.getElementById("loginCount").innerText = loginCount;
+    document.getElementById("otherCount").innerText = otherCount;
+
+    // Filter logs
+    function filterLogs() {
+
+        let visibleCount = 0;
+
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const actionValue = actionFilter.value.toLowerCase();
+        const selectedDate = dateFilter.value;
+
+        rows.forEach(function(row) {
+
+            const rowText = row.innerText.toLowerCase();
+            const actionText = row.cells[2].innerText.toLowerCase();
+            const dateText = row.cells[5].innerText.trim();
+
+            const matchesSearch = rowText.includes(searchValue);
+
+            const matchesAction =
+                !actionValue || actionText.includes(actionValue);
+
+            let matchesDate = true;
+
+            if (selectedDate) {
+
+                const datePart = dateText.split(" ")[0];
+                const parts = datePart.split("-");
+
+                if (parts.length === 3) {
+
+                    const formattedDate =
+                        parts[2] + "-" + parts[1] + "-" + parts[0];
+
+                    matchesDate = formattedDate === selectedDate;
+
+                } else {
+
+                    matchesDate = false;
+
+                }
+
+            }
+
+            if (matchesSearch && matchesAction && matchesDate) {
+
+                row.style.display = "";
+                visibleCount++;
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+        paginationInfo.innerText = "Showing " + visibleCount + " records";
+
+    }
+
+    searchInput.addEventListener("input", filterLogs);
+    actionFilter.addEventListener("change", filterLogs);
+    dateFilter.addEventListener("change", filterLogs);
+
+});
+
+// Clear filters
+function clearFilters() {
+
+    document.getElementById("searchLogs").value = "";
+    document.getElementById("actionFilter").value = "";
+    document.getElementById("dateFilter").value = "";
+
+    document.getElementById("searchLogs").dispatchEvent(
+        new Event("input")
+    );
+
+}
+
+</script>
+
+</body>
+</html>

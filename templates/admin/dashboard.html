@@ -58,12 +58,11 @@
                 <span>Candidates</span>
             </a>
 
-            <a href="#"
-               class="menu-item"
-               onclick="alert('Student Management page is coming soon!'); return false;">
-                <span class="menu-icon">🎓</span>
-                <span>Students</span>
-            </a>
+            <a href="{{ url_for('student.student_list') }}"
+   class="menu-item">
+    <span class="menu-icon">🎓</span>
+    <span>Students</span>
+</a>
 
             <p class="menu-title menu-space">MANAGEMENT</p>
 
@@ -74,17 +73,15 @@
                 <span>Results</span>
             </a>
 
-            <!-- VOTING LINKS -->
-            <a href="{{ url_for('admin.voting_links') }}"
-               class="menu-item">
-                <span class="menu-icon">🔗</span>
-                <span>Voting Links</span>
-            </a>
+            <!-- VOTING LINKS (COMING SOON) -->
+            <a href="{{ url_for('admin.voting_links') }}" class="menu-item">
+    <span class="menu-icon">🔗</span>
+    <span>Voting Links</span>
+</a>
 
             <!-- AUDIT LOGS -->
-            <a href="#"
-               class="menu-item"
-               onclick="alert('Audit Logs page is coming soon!'); return false;">
+            <a href="{{ url_for('admin.audit_logs') }}"
+               class="menu-item">
                 <span class="menu-icon">📋</span>
                 <span>Audit Logs</span>
             </a>
@@ -292,20 +289,20 @@
 
                 </a>
 
-                <!-- VOTING LINK -->
-                <a href="{{ url_for('admin.voting_links') }}"
-                   class="quick-action">
+               <!-- VOTING LINKS -->
+<a href="{{ url_for('admin.voting_links') }}"
+   class="quick-action">
 
-                    <div class="quick-icon">🔗</div>
+    <div class="quick-icon">🔗</div>
 
-                    <div>
-                        <strong>Voting Link</strong>
-                        <span>Generate and manage voting links</span>
-                    </div>
+    <div>
+        <strong>Voting Links</strong>
+        <span>Generate and manage voting links</span>
+    </div>
 
-                    <b>→</b>
+    <b>→</b>
 
-                </a>
+</a>
 
             </div>
 

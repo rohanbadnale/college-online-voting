@@ -1,3 +1,4 @@
+from flask import request
 import os
 import uuid
 from werkzeug.utils import secure_filename
@@ -2615,6 +2616,67 @@ def results():
         cursor.close()
         connection.close()
 
+@admin_bp.route("/audit-logs")
+def audit_logs():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_db_connection()
+
+        if connection is None:
+            raise Exception("Database connection returned None")
+
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                l.id,
+                l.admin_id,
+                a.name AS admin_name,
+                l.action,
+                l.description,
+                l.ip_address,
+                l.created_at
+            FROM audit_logs l
+            LEFT JOIN admins a
+                ON l.admin_id = a.id
+            ORDER BY l.created_at DESC
+            LIMIT 100
+        """)
+
+        logs = cursor.fetchall()
+
+        return render_template(
+            "admin/audit_logs.html",
+            logs=logs,
+            admin_name=session.get("admin_name", "Admin"),
+            admin_email=session.get("admin_email", "")
+        )
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+
+        flash(f"Audit Logs Error: {str(e)}", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()
+            # =========================================================
+# VOTING LINKS MANAGEMENT
+# =========================================================
+
 @admin_bp.route("/voting-links")
 def voting_links():
 
@@ -2622,15 +2684,17 @@ def voting_links():
         flash("Please login first.", "error")
         return redirect(url_for("admin.login"))
 
-    connection = get_db_connection()
-
-    if connection is None:
-        flash("Database connection failed.", "error")
-        return redirect(url_for("admin.dashboard"))
-
-    cursor = connection.cursor(dictionary=True)
+    connection = None
+    cursor = None
 
     try:
+        connection = get_db_connection()
+
+        if not connection:
+            raise Exception("Database connection failed")
+
+        cursor = connection.cursor(dictionary=True)
+
         cursor.execute("""
             SELECT
                 id,
@@ -2646,22 +2710,29 @@ def voting_links():
         elections = cursor.fetchall()
 
         for election in elections:
-            election["voting_url"] = url_for(
-                "voting.voting_page",
-                voting_token=election["voting_token"],
-                _external=True
+            election["voting_url"] = (
+                request.host_url.rstrip("/")
+                + url_for(
+                    "voting.voting_page",
+                    voting_token=election["voting_token"]
+                )
             )
 
         return render_template(
             "admin/voting_links.html",
-            elections=elections
+            elections=elections,
+            admin_name=session.get("admin_name", "Admin"),
+            admin_email=session.get("admin_email", "")
         )
 
     except Exception as e:
-        print("Voting links error:", e)
-        flash("Unable to load voting links.", "error")
+        print("Voting Links Error:", e)
+        flash(f"Voting Links Error: {str(e)}", "error")
         return redirect(url_for("admin.dashboard"))
 
     finally:
-        cursor.close()
-        connection.close()
+        if cursor:
+            cursor.close()
+
+        if connection:
+            connection.close()

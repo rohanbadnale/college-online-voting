@@ -99,22 +99,8 @@ def get_active_election(voting_token):
 # URL: /vote/<voting_token>
 # =========================================================
 
-@voting_bp.route(
-    "/<string:voting_token>",
-    methods=["GET"]
-)
+@voting_bp.route("/<voting_token>", methods=["GET"])
 def voting_page(voting_token):
-
-    election = get_active_election(voting_token)
-
-    if not election:
-
-        return render_template(
-            "vote/voting.html",
-            election=None,
-            positions=[],
-            candidates={}
-        )
 
     connection = get_db_connection()
 
@@ -127,51 +113,113 @@ def voting_page(voting_token):
 
         cursor = connection.cursor(dictionary=True)
 
-        # Get election positions
+        # -------------------------------------------------
+        # GET ELECTION USING VOTING TOKEN
+        # -------------------------------------------------
+
         cursor.execute(
             """
             SELECT *
-            FROM positions
-            WHERE election_id = %s
-            ORDER BY id ASC
+            FROM elections
+            WHERE voting_token = %s
+            LIMIT 1
             """,
-            (election["id"],)
+            (voting_token,)
         )
 
-        positions = cursor.fetchall()
+        election = cursor.fetchone()
 
-        # Get active candidates
-        cursor.execute(
-            """
-            SELECT *
-            FROM candidates
-            WHERE election_id = %s
-            AND status = 'ACTIVE'
-            ORDER BY position_id ASC, name ASC
-            """,
-            (election["id"],)
-        )
-
-        candidate_rows = cursor.fetchall()
-
-        # Group candidates position-wise
+        positions = []
         candidates = {}
 
-        for candidate in candidate_rows:
+        election_open = False
+        election_ended = False
 
-            position_id = candidate["position_id"]
+        # -------------------------------------------------
+        # CHECK ELECTION STATUS
+        # -------------------------------------------------
 
-            candidates.setdefault(
-                position_id,
-                []
-            ).append(candidate)
+        if election:
+
+            election_open = is_election_open(election)
+
+            now = datetime.now()
+
+            end_time = election.get("end_datetime")
+
+            status = str(
+                election.get("status", "")
+            ).upper()
+
+            if status == "COMPLETED":
+
+                election_ended = True
+
+            elif end_time and now > end_time:
+
+                election_ended = True
+
+            # -------------------------------------------------
+            # LOAD POSITIONS & CANDIDATES
+            # ONLY WHEN ELECTION IS OPEN
+            # -------------------------------------------------
+
+            if election_open:
+
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM positions
+                    WHERE election_id = %s
+                    ORDER BY id ASC
+                    """,
+                    (election["id"],)
+                )
+
+                positions = cursor.fetchall()
+
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM candidates
+                    WHERE election_id = %s
+                    AND status = 'ACTIVE'
+                    ORDER BY position_id ASC, name ASC
+                    """,
+                    (election["id"],)
+                )
+
+                candidate_rows = cursor.fetchall()
+
+                # Group candidates by position
+
+                for candidate in candidate_rows:
+
+                    position_id = candidate["position_id"]
+
+                    candidates.setdefault(
+                        position_id,
+                        []
+                    ).append(candidate)
+
+        # -------------------------------------------------
+        # RENDER VOTING PAGE
+        # -------------------------------------------------
 
         return render_template(
             "vote/voting.html",
             election=election,
+            election_open=election_open,
+            election_ended=election_ended,
             positions=positions,
             candidates=candidates
         )
+
+    except Exception as e:
+
+        print("Voting page error:", e)
+
+        return "Unable to load voting page.", 500
 
     finally:
 
@@ -179,8 +227,6 @@ def voting_page(voting_token):
             cursor.close()
 
         connection.close()
-
-
 # =========================================================
 # CANDIDATE PROFILE
 # URL: /vote/<token>/candidate/<candidate_id>

@@ -37,7 +37,7 @@
 
         </div>
 
-        {% if election %}
+        {% if election and election_open %}
         <div class="voting-status">
             <span class="status-dot"></span>
             Voting Active
@@ -70,19 +70,23 @@
     {% endwith %}
 
 
+    <!-- INVALID LINK -->
+
     {% if not election %}
 
-        <!-- NO ACTIVE ELECTION -->
+        <section class="election-card election-over-card">
 
-        <section class="election-card">
+            <div class="election-over-icon">⚠️</div>
 
-            <span class="election-kicker">COLLEGE ELECTION</span>
+            <span class="election-kicker">
+                COLLEGE ELECTION
+            </span>
 
-            <h2>No Active Election</h2>
+            <h2>Invalid Voting Link</h2>
 
             <p>
-                Currently there is no active election.
-                Please contact the college administrator.
+                This voting link is invalid or does not exist.
+                Please verify your link or contact the college administrator.
             </p>
 
             <a href="/" class="submit-vote-btn">
@@ -90,6 +94,85 @@
             </a>
 
         </section>
+
+
+    <!-- ELECTION ENDED -->
+
+    {% elif election_ended|default(false) %}
+
+        <section class="election-card election-over-card">
+
+            <div class="election-over-icon">🏁</div>
+
+            <span class="election-kicker">
+                COLLEGE ELECTION
+            </span>
+
+            <h2>Election Is Over</h2>
+
+            <h3>{{ election.title }}</h3>
+
+            <p>
+                Voting for this election has officially closed.
+                Thank you for participating in the college democratic process.
+            </p>
+
+            <div class="election-ended-info">
+
+                <strong>Voting Ended On</strong>
+
+                <span>
+                    {{ election.end_datetime.strftime('%d %B %Y, %I:%M %p') }}
+                </span>
+
+            </div>
+
+            <a href="/" class="submit-vote-btn">
+                Back to Home
+            </a>
+
+        </section>
+
+
+    <!-- ELECTION NOT STARTED -->
+
+    {% elif not election_open %}
+
+        <section class="election-card election-over-card">
+
+            <div class="election-over-icon">🕒</div>
+
+            <span class="election-kicker">
+                COLLEGE ELECTION
+            </span>
+
+            <h2>Voting Has Not Started</h2>
+
+            <h3>{{ election.title }}</h3>
+
+            <p>
+                Voting for this election is not open yet.
+                Please return when the election starts.
+            </p>
+
+            <div class="election-ended-info">
+
+                <strong>Voting Starts On</strong>
+
+                <span>
+                    {{ election.start_datetime.strftime('%d %B %Y, %I:%M %p') }}
+                </span>
+
+            </div>
+
+            <a href="/" class="submit-vote-btn">
+                Back to Home
+            </a>
+
+        </section>
+
+
+    <!-- ACTIVE ELECTION -->
 
     {% else %}
 

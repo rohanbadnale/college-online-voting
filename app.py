@@ -5,7 +5,7 @@ from database import get_db_connection
 
 from routes.admin_routes import admin_bp
 from routes.voting_routes import voting_bp
-
+from routes.student_routes import student_bp
 
 # =========================================================
 # FLASK APP
@@ -22,7 +22,7 @@ app.config.from_object(Config)
 
 app.register_blueprint(admin_bp)
 app.register_blueprint(voting_bp)
-
+app.register_blueprint(student_bp)
 
 # =========================================================
 # HOME PAGE
