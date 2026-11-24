@@ -1,3 +1,5 @@
+from flask import request, redirect, url_for, flash, session, render_template
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask import request
 import os
 import uuid
@@ -2736,3 +2738,425 @@ def voting_links():
 
         if connection:
             connection.close()
+
+# =========================================================
+# ADMIN PROFILE - HELPER FUNCTION
+# =========================================================
+
+def _is_diksha_admin(cursor):
+    """
+    Only active Diksha admin can manage all admin profiles.
+    Permission is checked using email, not admin ID.
+    """
+
+    cursor.execute("""
+        SELECT email, status
+        FROM admins
+        WHERE id = %s
+        LIMIT 1
+    """, (session.get("admin_id"),))
+
+    current_admin = cursor.fetchone()
+
+    if not current_admin:
+        return False
+
+    email = (current_admin.get("email") or "").strip().lower()
+    status = (current_admin.get("status") or "").strip().upper()
+
+    return (
+        email == "diksha@svmudgir.org"
+        and status == "ACTIVE"
+    )
+
+
+# =========================================================
+# ADMIN PROFILE MANAGEMENT - DIKSHA ONLY
+# URL: /admin/profiles
+# =========================================================
+
+@admin_bp.route("/profiles", methods=["GET"])
+def admin_profiles():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        if not _is_diksha_admin(cursor):
+            flash("You are not authorized to manage admin profiles.", "error")
+            return redirect(url_for("admin.profile"))
+
+        cursor.execute("""
+            SELECT id, name, email, status, created_at
+            FROM admins
+            WHERE id IN (1, 2, 3)
+            ORDER BY id ASC
+        """)
+
+        admins = cursor.fetchall()
+
+        return render_template(
+            "admin/admin_profiles.html",
+            admins=admins
+        )
+
+    except Exception as e:
+
+        print("Admin profiles error:", e)
+        flash("Unable to load admin profiles.", "error")
+        return redirect(url_for("admin.profile"))
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# =========================================================
+# EDIT ADMIN PROFILE - DIKSHA ONLY
+# URL: /admin/profiles/<admin_id>/edit
+# =========================================================
+
+@admin_bp.route(
+    "/profiles/<int:admin_id>/edit",
+    methods=["POST"]
+)
+def edit_admin_profile(admin_id):
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.dashboard"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        if not _is_diksha_admin(cursor):
+            flash("You are not authorized to edit admin profiles.", "error")
+            return redirect(url_for("admin.profile"))
+
+        if admin_id not in (1, 2, 3):
+            flash("Invalid admin account.", "error")
+            return redirect(url_for("admin.admin_profiles"))
+
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+
+        if len(name) < 2:
+            flash("Name must contain at least 2 characters.", "error")
+            return redirect(url_for("admin.admin_profiles"))
+
+        if not email or "@" not in email or "." not in email:
+            flash("Please enter a valid email address.", "error")
+            return redirect(url_for("admin.admin_profiles"))
+
+        cursor.execute("""
+            SELECT id
+            FROM admins
+            WHERE email = %s AND id != %s
+            LIMIT 1
+        """, (email, admin_id))
+
+        if cursor.fetchone():
+            flash("This email address is already registered.", "error")
+            return redirect(url_for("admin.admin_profiles"))
+
+        cursor.execute("""
+            UPDATE admins
+            SET name = %s, email = %s
+            WHERE id = %s
+        """, (name, email, admin_id))
+
+        connection.commit()
+
+        if admin_id == session.get("admin_id"):
+            session["admin_name"] = name
+            session["admin_email"] = email
+
+        flash("Admin profile updated successfully.", "success")
+
+        return redirect(url_for("admin.admin_profiles"))
+
+    except Exception as e:
+
+        connection.rollback()
+        print("Edit admin profile error:", e)
+
+        flash("Unable to update admin profile.", "error")
+        return redirect(url_for("admin.admin_profiles"))
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# =========================================================
+# GET LOGGED-IN ADMIN
+# =========================================================
+
+def get_logged_in_admin():
+
+    admin_id = session.get("admin_id")
+
+    if not admin_id:
+        return None
+
+    connection = get_db_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                password_hash,
+                status,
+                created_at
+            FROM admins
+            WHERE id = %s
+            LIMIT 1
+        """, (admin_id,))
+
+        return cursor.fetchone()
+
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# =========================================================
+# CHECK DIKSHA ADMIN
+# =========================================================
+
+def is_diksha_admin(admin):
+
+    if not admin:
+        return False
+
+    email = (admin.get("email") or "").strip().lower()
+    status = (admin.get("status") or "").strip().upper()
+
+    return (
+        email == "diksha@svmudgir.org"
+        and status == "ACTIVE"
+    )
+
+
+# =========================================================
+# MY PROFILE
+# URL: /admin/profile
+# =========================================================
+
+@admin_bp.route("/profile", methods=["GET"])
+def profile():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    admin = get_logged_in_admin()
+
+    if not admin:
+        session.clear()
+        flash("Admin account not found.", "error")
+        return redirect(url_for("admin.login"))
+
+    if (admin.get("status") or "").upper() != "ACTIVE":
+        session.clear()
+        flash("Your admin account is inactive.", "error")
+        return redirect(url_for("admin.login"))
+
+    return render_template(
+        "admin/profile.html",
+        admin=admin,
+        can_manage_profiles=is_diksha_admin(admin)
+    )
+
+
+# =========================================================
+# UPDATE MY PROFILE
+# URL: /admin/profile/update
+# =========================================================
+
+@admin_bp.route("/profile/update", methods=["POST"])
+def update_profile():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    admin = get_logged_in_admin()
+
+    if not admin or (admin.get("status") or "").upper() != "ACTIVE":
+        session.clear()
+        return redirect(url_for("admin.login"))
+
+    name = request.form.get("name", "").strip()
+    email = request.form.get("email", "").strip().lower()
+
+    if len(name) < 2:
+        flash("Name must contain at least 2 characters.", "error")
+        return redirect(url_for("admin.profile"))
+
+    if not email or "@" not in email or "." not in email:
+        flash("Please enter a valid email address.", "error")
+        return redirect(url_for("admin.profile"))
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.profile"))
+
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+
+        cursor.execute("""
+            SELECT id
+            FROM admins
+            WHERE email = %s AND id != %s
+            LIMIT 1
+        """, (email, admin["id"]))
+
+        if cursor.fetchone():
+            flash("This email is already registered.", "error")
+            return redirect(url_for("admin.profile"))
+
+        cursor.execute("""
+            UPDATE admins
+            SET name = %s, email = %s
+            WHERE id = %s
+        """, (name, email, admin["id"]))
+
+        connection.commit()
+
+        session["admin_name"] = name
+        session["admin_email"] = email
+
+        flash("Your profile updated successfully.", "success")
+
+    except Exception as e:
+
+        connection.rollback()
+        print("Profile update error:", e)
+
+        flash("Unable to update your profile.", "error")
+
+    finally:
+        cursor.close()
+        connection.close()
+
+    return redirect(url_for("admin.profile"))
+
+
+# =========================================================
+# CHANGE PASSWORD
+# URL: /admin/profile/change-password
+# =========================================================
+
+@admin_bp.route(
+    "/profile/change-password",
+    methods=["POST"]
+)
+def change_password():
+
+    if not session.get("admin_id"):
+        flash("Please login first.", "error")
+        return redirect(url_for("admin.login"))
+
+    admin = get_logged_in_admin()
+
+    if not admin or (admin.get("status") or "").upper() != "ACTIVE":
+        session.clear()
+        return redirect(url_for("admin.login"))
+
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+    confirm_password = request.form.get("confirm_password", "")
+
+    if not current_password or not new_password or not confirm_password:
+        flash("All password fields are required.", "error")
+        return redirect(url_for("admin.profile"))
+
+    if not check_password_hash(
+        admin["password_hash"],
+        current_password
+    ):
+        flash("Current password is incorrect.", "error")
+        return redirect(url_for("admin.profile"))
+
+    if len(new_password) < 8:
+        flash("New password must contain at least 8 characters.", "error")
+        return redirect(url_for("admin.profile"))
+
+    if new_password != confirm_password:
+        flash("New passwords do not match.", "error")
+        return redirect(url_for("admin.profile"))
+
+    if current_password == new_password:
+        flash("New password must be different from the current password.", "error")
+        return redirect(url_for("admin.profile"))
+
+    new_password_hash = generate_password_hash(new_password)
+
+    connection = get_db_connection()
+
+    if connection is None:
+        flash("Database connection failed.", "error")
+        return redirect(url_for("admin.profile"))
+
+    cursor = connection.cursor()
+
+    try:
+
+        cursor.execute("""
+            UPDATE admins
+            SET password_hash = %s
+            WHERE id = %s
+        """, (new_password_hash, admin["id"]))
+
+        connection.commit()
+
+        session.clear()
+
+        flash(
+            "Password changed successfully. Please login again.",
+            "success"
+        )
+
+        return redirect(url_for("admin.login"))
+
+    except Exception as e:
+
+        connection.rollback()
+        print("Change password error:", e)
+
+        flash("Unable to change password.", "error")
+
+    finally:
+        cursor.close()
+        connection.close()
+
+    return redirect(url_for("admin.profile"))
