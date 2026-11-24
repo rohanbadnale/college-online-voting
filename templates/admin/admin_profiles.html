@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Admin Profiles | SVM Udgir</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin.css') }}">
+
+    <style>
+        .manage-wrap {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .admin-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 22px rgba(15,23,42,.05);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+        }
+
+        .save-btn {
+            margin-top: 16px;
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 18px;
+            background: #1d4ed8;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .admin-meta {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .flash-area div {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 9px;
+        }
+
+        .flash-area .error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .flash-area .success {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        @media(max-width:650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="manage-wrap">
+
+    <a class="back-btn"
+       href="{{ url_for('admin.profile') }}">
+        ← Back to My Profile
+    </a>
+
+    <h1>Manage Admin Profiles</h1>
+
+    <p>Edit information of all three administrators.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-area">
+                {% for category, message in messages %}
+                    <div class="{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% for item in admins %}
+
+        <section class="admin-card">
+
+            <h2>
+                {{ item.name }}
+                <span class="admin-meta">
+                    · Admin #{{ item.id }} · {{ item.status }}
+                </span>
+            </h2>
+
+            <form method="POST"
+                  action="{{ url_for('admin.edit_admin_profile', admin_id=item.id) }}">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Full Name</label>
+
+                        <input type="text"
+                               name="name"
+                               value="{{ item.name }}"
+                               minlength="2"
+                               maxlength="150"
+                               required>
+                    </div>
+
+                    <div>
+                        <label>Email Address</label>
+
+                        <input type="email"
+                               name="email"
+                               value="{{ item.email }}"
+                               maxlength="255"
+                               required>
+                    </div>
+
+                </div>
+
+                <button class="save-btn" type="submit">
+                    Save Admin #{{ item.id }}
+                </button>
+
+            </form>
+
+        </section>
+
+    {% else %}
+
+        <p>No admin accounts found.</p>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,965 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Profile | SVM Voting</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --ink: #18243b;
+    --muted: #7d8aa2;
+    --blue: #4568ed;
+    --blue-dark: #2f50d2;
+    --line: #e9edf5;
+    --canvas: #f3f6fb;
+    --nav: #111c35;
+    --green: #14845c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: "DM Sans", sans-serif;
+}
+
+.app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    background: var(--nav);
+    color: white;
+    padding: 25px 17px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 0 9px 25px;
+    border-bottom: 1px solid #ffffff18;
+}
+
+.logo-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 14px;
+    background: linear-gradient(145deg,#6885ff,#3659e4);
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+}
+
+.logo b {
+    font: 800 13px Manrope,sans-serif;
+    letter-spacing: .5px;
+}
+
+.logo small {
+    display: block;
+    color: #9eacc7;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.menu-caption {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #7788a9;
+    font-weight: 800;
+    padding: 27px 12px 10px;
+}
+
+.nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #bac6dc;
+    text-decoration: none;
+    padding: 12px 13px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 4px 0;
+    transition: .2s;
+}
+
+.nav a:hover {
+    background: #ffffff10;
+    color: #fff;
+}
+
+.nav a.active {
+    color: white;
+    background: linear-gradient(100deg,#3454c9,#4165e7);
+    box-shadow: 0 7px 18px #2546bb55;
+}
+
+.nav-icon {
+    width: 19px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.sidebar-foot {
+    margin-top: auto;
+    border-top: 1px solid #ffffff18;
+    padding: 16px 10px 0;
+    color: #8494b1;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+/* MAIN CONTENT */
+
+.main {
+    min-width: 0;
+    padding: 27px clamp(18px,4vw,48px) 32px;
+}
+
+.topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.breadcrumb {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.breadcrumb strong {
+    color: #34435f;
+}
+
+.account-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.mini {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e3eaff;
+    color: #3456d7;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+}
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.page-title h1 {
+    font: 800 27px Manrope,sans-serif;
+    letter-spacing: -1px;
+    margin: 0 0 6px;
+}
+
+.page-title p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 30px;
+    background: #e7f7ef;
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.status:before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1aa56e;
+}
+
+/* PROFILE HEADER */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(112deg,#1e347f 0%,#385bd5 55%,#7790ff 100%);
+    padding: 25px 28px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 14px 28px #3152d522;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 75px;
+    height: 75px;
+    flex: 0 0 75px;
+    border: 4px solid #ffffff55;
+    border-radius: 22px;
+    background: #ffffff22;
+    display: grid;
+    place-items: center;
+    font: 800 29px Manrope,sans-serif;
+}
+
+.hero-copy {
+    min-width: 0;
+    z-index: 1;
+}
+
+.hero-copy h2 {
+    font: 800 20px Manrope,sans-serif;
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+}
+
+.hero-copy p {
+    margin: 0;
+    color: #dce5ff;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.hero-label {
+    margin-left: auto;
+    z-index: 1;
+    border: 1px solid #ffffff55;
+    background: #ffffff18;
+    border-radius: 9px;
+    padding: 9px 11px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* CARDS */
+
+.columns {
+    display: grid;
+    grid-template-columns: minmax(0,1.05fr) minmax(310px,.95fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 21px;
+    margin-bottom: 17px;
+    box-shadow: 0 4px 16px #1a2a4807;
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 17px;
+}
+
+.card-head h3 {
+    font: 800 13px Manrope,sans-serif;
+    margin: 0 0 4px;
+}
+
+.card-head p {
+    font-size: 10px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.card-symbol {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 10px;
+    background: #edf1ff;
+    color: #4262df;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.detail {
+    padding: 13px 14px;
+    border: 1px solid #edf0f6;
+    border-radius: 11px;
+    background: #f9faff;
+    min-width: 0;
+}
+
+.detail span {
+    display: block;
+    text-transform: uppercase;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #8b97aa;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.detail strong {
+    display: block;
+    font-size: 11px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* FORMS */
+
+.field {
+    margin-bottom: 13px;
+}
+
+.field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #52617a;
+    margin-bottom: 6px;
+}
+
+.field input {
+    height: 42px;
+    width: 100%;
+    border: 1px solid #dfe5ef;
+    border-radius: 9px;
+    padding: 0 12px;
+    background: #fff;
+    color: var(--ink);
+    font: 500 11px "DM Sans",sans-serif;
+    outline: none;
+}
+
+.field input:focus {
+    border-color: #5876ed;
+    box-shadow: 0 0 0 3px #4568ed17;
+}
+
+.helper {
+    font-size: 9px;
+    color: #8b97aa;
+    line-height: 1.5;
+    margin: -3px 0 13px;
+}
+
+/* BUTTONS */
+
+.btn {
+    border: 0;
+    border-radius: 9px;
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    font: 800 10px "DM Sans",sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn:hover {
+    background: var(--blue-dark);
+    transform: translateY(-1px);
+}
+
+.btn-soft {
+    background: #edf1ff;
+    color: #3152c4;
+}
+
+.btn-soft:hover {
+    background: #e2e9ff;
+}
+
+.btn-dark {
+    background: #263653;
+}
+
+.btn-dark:hover {
+    background: #172642;
+}
+
+/* SECURITY */
+
+.notice {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f5f7fc;
+    color: #697891;
+    font-size: 9px;
+    line-height: 1.6;
+    margin-top: 14px;
+}
+
+.notice b {
+    color: #394a68;
+}
+
+.security-item {
+    display: flex;
+    gap: 11px;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.security-item:last-child {
+    border: 0;
+    padding-bottom: 0;
+}
+
+.security-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border-radius: 9px;
+    background: #eff3ff;
+    color: #4568ed;
+    display: grid;
+    place-items: center;
+}
+
+.security-item b {
+    display: block;
+    font-size: 10px;
+    margin: 1px 0 4px;
+}
+
+.security-item small {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.footer {
+    text-align: center;
+    color: #9aa5b7;
+    font-size: 9px;
+    padding: 15px 0 0;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px) {
+    .app {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        padding: 15px;
+    }
+
+    .logo {
+        padding-bottom: 13px;
+    }
+
+    .menu-caption,
+    .sidebar-foot {
+        display: none;
+    }
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        padding-top: 10px;
+    }
+
+    .nav a {
+        padding: 9px 10px;
+    }
+
+    .main {
+        padding: 22px 16px;
+    }
+
+    .columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:560px) {
+    .page-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .hero {
+        padding: 19px;
+        flex-wrap: wrap;
+    }
+
+    .hero-label {
+        margin-left: 0;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 17px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+{% set profile_name = admin.name if admin and admin.name else session.get('admin_name','Administrator') %}
+{% set profile_email = admin.email if admin and admin.email else session.get('admin_email','') %}
+{% set profile_status = admin.status if admin and admin.status else 'ACTIVE' %}
+{% set profile_id = admin.id if admin and admin.id else session.get('admin_id','—') %}
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">🗳️</div>
+            <div>
+                <b>SVM VOTING SYSTEM</b>
+                <small>Admin workspace</small>
+            </div>
+        </div>
+
+        <div class="menu-caption">WORKSPACE</div>
+
+        <nav class="nav">
+
+            <a href="{{ url_for('admin.dashboard') }}">
+                <span class="nav-icon">▦</span>
+                Dashboard
+            </a>
+
+            <a class="active" href="{{ url_for('admin.profile') }}">
+                <span class="nav-icon">◉</span>
+                My Profile
+            </a>
+
+            <a href="{{ url_for('admin.elections') }}">
+                <span class="nav-icon">▣</span>
+                Elections
+            </a>
+
+            <a href="{{ url_for('admin.candidates') }}">
+                <span class="nav-icon">♙</span>
+                Candidates
+            </a>
+
+            <!-- STUDENTS -->
+<!-- Students route will be connected after it is created -->
+
+            <a href="{{ url_for('admin.results') }}">
+                <span class="nav-icon">▤</span>
+                Results
+            </a>
+
+            <a href="{{ url_for('admin.voting_links') }}">
+                <span class="nav-icon">↗</span>
+                Voting Links
+            </a>
+
+            <a href="{{ url_for('admin.audit_logs') }}">
+                <span class="nav-icon">☷</span>
+                Audit Logs
+            </a>
+
+        </nav>
+
+        <div class="sidebar-foot">
+            Swami Vivekananda Mahavidyalaya<br>
+            Udgir · Administrator Portal
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="topline">
+            <div class="breadcrumb">
+                Workspace / <strong>My Profile</strong>
+            </div>
+
+            <div class="account-chip">
+                <div class="mini">
+                    {{ profile_name[0]|upper if profile_name else 'A' }}
+                </div>
+                {{ profile_name }}
+            </div>
+        </div>
+
+        <div class="page-title">
+            <div>
+                <h1>My Profile</h1>
+                <p>Manage your personal details, password and account security.</p>
+            </div>
+
+            <span class="status">
+                {{ profile_status|upper }}
+            </span>
+        </div>
+
+        <!-- PROFILE HEADER -->
+        <section class="hero">
+
+            <div class="avatar">
+                {{ profile_name[0]|upper if profile_name else 'A' }}
+            </div>
+
+            <div class="hero-copy">
+                <h2>{{ profile_name }}</h2>
+                <p>
+                    {{ profile_email }}
+                    · Admin ID #{{ profile_id }}
+                </p>
+            </div>
+
+            <div class="hero-label">
+                ADMINISTRATOR
+            </div>
+
+        </section>
+
+        <div class="columns">
+
+            <!-- LEFT COLUMN -->
+            <div>
+
+                <!-- ACCOUNT OVERVIEW -->
+                <section class="card">
+
+                    <div class="card-head">
+                        <div>
+                            <h3>Account Overview</h3>
+                            <p>Your registered administrator information.</p>
+                        </div>
+
+                        <div class="card-symbol">♙</div>
+                    </div>
+
+                    <div class="details">
+
+                        <div class="detail">
+                            <span>Full Name</span>
+                            <strong>{{ profile_name }}</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Email Address</span>
+                            <strong>{{ profile_email or 'Not available' }}</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Admin ID</span>
+                            <strong>#{{ profile_id }}</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Account Status</span>
+                            <strong>{{ profile_status|upper }}</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Created On</span>
+                            <strong>
+                                {% if admin and admin.created_at %}
+                                    {{ admin.created_at.strftime('%d %b %Y') if admin.created_at.strftime is defined else admin.created_at }}
+                                {% else %}
+                                    Not available
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Role</span>
+                            <strong>System Administrator</strong>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- EDIT PROFILE -->
+                <section class="card">
+
+                    <div class="card-head">
+                        <div>
+                            <h3>Edit Personal Details</h3>
+                            <p>Update the name and email linked to your account.</p>
+                        </div>
+
+                        <div class="card-symbol">✎</div>
+                    </div>
+
+                    <form method="POST"
+                          action="{{ url_for('admin.update_profile') }}">
+
+                        <div class="field">
+                            <label for="name">Full Name</label>
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                value="{{ profile_name }}"
+                                maxlength="100"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="email">Email Address</label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value="{{ profile_email }}"
+                                maxlength="150"
+                                required>
+                        </div>
+
+                        <button class="btn" type="submit">
+                            Save Changes →
+                        </button>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div>
+
+                <!-- CHANGE PASSWORD -->
+                <section class="card">
+
+                    <div class="card-head">
+                        <div>
+                            <h3>Change Password</h3>
+                            <p>Choose a strong password you have not used before.</p>
+                        </div>
+
+                        <div class="card-symbol">🔐</div>
+                    </div>
+
+                    <form method="POST"
+                          action="{{ url_for('admin.change_password') }}">
+
+                        <div class="field">
+                            <label for="current_password">
+                                Current Password
+                            </label>
+
+                            <input
+                                id="current_password"
+                                name="current_password"
+                                type="password"
+                                placeholder="Enter current password"
+                                autocomplete="current-password"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="new_password">
+                                New Password
+                            </label>
+
+                            <input
+                                id="new_password"
+                                name="new_password"
+                                type="password"
+                                placeholder="Minimum 8 characters"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="confirm_password">
+                                Confirm New Password
+                            </label>
+
+                            <input
+                                id="confirm_password"
+                                name="confirm_password"
+                                type="password"
+                                placeholder="Re-enter new password"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required>
+                        </div>
+
+                        <p class="helper">
+                            Use uppercase and lowercase letters, numbers
+                            and symbols for better security.
+                        </p>
+
+                        <button class="btn" type="submit">
+                            Update Password →
+                        </button>
+
+                    </form>
+
+                    <div class="notice">
+                        <span>🔐</span>
+                        <div>
+                            <b>Security Tip</b><br>
+                            After changing your password, you may be asked
+                            to sign in again.
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- SECURITY REMINDERS -->
+                <section class="card">
+
+                    <div class="card-head">
+                        <div>
+                            <h3>Security Reminders</h3>
+                            <p>Keep your administrator account protected.</p>
+                        </div>
+
+                        <div class="card-symbol">◇</div>
+                    </div>
+
+                    <div class="security-item">
+                        <div class="security-icon">✓</div>
+                        <div>
+                            <b>Active Account</b>
+                            <small>
+                                Your account is currently marked
+                                {{ profile_status|upper }}.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="security-item">
+                        <div class="security-icon">🔐</div>
+                        <div>
+                            <b>Keep Credentials Private</b>
+                            <small>
+                                Never share your password or login details.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="security-item">
+                        <div class="security-icon">↪</div>
+                        <div>
+                            <b>Log Out on Shared Devices</b>
+                            <small>
+                                Always sign out when using a public computer.
+                            </small>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ADMIN MANAGEMENT -->
+                {% if can_manage_profiles|default(false) %}
+
+                <section class="card">
+
+                    <div class="card-head">
+                        <div>
+                            <h3>Admin Management</h3>
+                            <p>Manage the other administrator accounts.</p>
+                        </div>
+
+                        <div class="card-symbol">♧</div>
+                    </div>
+
+                    <a class="btn btn-soft"
+                       href="{{ url_for('admin.admin_profiles') }}">
+                        Manage Admin Profiles →
+                    </a>
+
+                </section>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="card-actions">
+
+            <a class="btn btn-soft"
+               href="{{ url_for('admin.dashboard') }}">
+                ← Back to Dashboard
+            </a>
+
+            <a class="btn btn-dark"
+               href="{{ url_for('admin.logout') }}">
+                Log Out
+            </a>
+
+        </div>
+
+        <footer class="footer">
+            © 2026 SVM Online Voting System ·
+            Swami Vivekananda Mahavidyalaya, Udgir
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
